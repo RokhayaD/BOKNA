@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: bokna
+      POSTGRES_PASSWORD: bokna
+      POSTGRES_DB: bokna
+    ports:
+      - "5544:5432"
+    volumes:
+      - bokna_pgdata:/var/lib/postgresql/data
+
+volumes:
+  bokna_pgdata:

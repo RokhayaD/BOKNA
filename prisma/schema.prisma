@@ -1,0 +1,196 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CITIZEN
+  ADMIN
+}
+
+enum ModerationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum IdeaCategory {
+  AMELIORATION
+  SIGNALEMENT
+  INVESTISSEMENT
+  PROJET_COMMUNAUTAIRE
+}
+
+enum ProjectStatus {
+  PLANNED
+  ONGOING
+  DONE
+}
+
+enum ParticipationType {
+  INITIATIVE
+  MAYOR_CANDIDACY
+}
+
+enum NewsType {
+  NEWS
+  EVENT
+  MEETING
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  phone        String?
+  role         Role     @default(CITIZEN)
+  communeId    String?
+  commune      Commune? @relation(fields: [communeId], references: [id])
+  createdAt    DateTime @default(now())
+
+  ideas                 Idea[]
+  comments              Comment[]
+  votes                 IdeaVote[]
+  participationRequests ParticipationRequest[]
+  news                  News[]
+  notifications         Notification[]
+}
+
+model Region {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  slug        String  @unique
+  centroidLat Float
+  centroidLng Float
+
+  departments Department[]
+  news        News[]
+}
+
+model Department {
+  id       String @id @default(cuid())
+  name     String
+  slug     String @unique
+  regionId String
+  region   Region @relation(fields: [regionId], references: [id], onDelete: Cascade)
+
+  communes Commune[]
+
+  @@unique([regionId, name])
+}
+
+model Commune {
+  id           String   @id @default(cuid())
+  name         String
+  slug         String   @unique
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  population   Int?
+  description  String?
+  centroidLat  Float
+  centroidLng  Float
+  createdAt    DateTime @default(now())
+
+  projects               Project[]
+  ideas                  Idea[]
+  users                  User[]
+  participationRequests  ParticipationRequest[]
+  news                   News[]
+
+  @@unique([departmentId, name])
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  communeId   String
+  commune     Commune       @relation(fields: [communeId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  status      ProjectStatus @default(PLANNED)
+  startDate   DateTime?
+  createdAt   DateTime      @default(now())
+}
+
+model Idea {
+  id          String           @id @default(cuid())
+  title       String
+  description String
+  category    IdeaCategory
+  authorId    String
+  author      User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  communeId   String
+  commune     Commune          @relation(fields: [communeId], references: [id], onDelete: Cascade)
+  status      ModerationStatus @default(PENDING)
+  adminReply  String?
+  createdAt   DateTime         @default(now())
+
+  votes    IdeaVote[]
+  comments Comment[]
+}
+
+model IdeaVote {
+  id        String   @id @default(cuid())
+  ideaId    String
+  idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([ideaId, userId])
+}
+
+model Comment {
+  id        String           @id @default(cuid())
+  ideaId    String
+  idea      Idea             @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String
+  status    ModerationStatus @default(APPROVED)
+  createdAt DateTime         @default(now())
+}
+
+model ParticipationRequest {
+  id        String            @id @default(cuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  communeId String
+  commune   Commune           @relation(fields: [communeId], references: [id], onDelete: Cascade)
+  type      ParticipationType
+  message   String
+  status    ModerationStatus  @default(PENDING)
+  createdAt DateTime          @default(now())
+}
+
+model News {
+  id          String    @id @default(cuid())
+  title       String
+  content     String
+  type        NewsType  @default(NEWS)
+  communeId   String?
+  commune     Commune?  @relation(fields: [communeId], references: [id])
+  regionId    String?
+  region      Region?   @relation(fields: [regionId], references: [id])
+  eventDate   DateTime?
+  authorId    String
+  author      User      @relation(fields: [authorId], references: [id])
+  publishedAt DateTime  @default(now())
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
