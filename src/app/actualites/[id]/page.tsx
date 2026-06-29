@@ -1,11 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { PageHero } from "@/components/PageHero";
+import { Badge } from "@/components/Badge";
 
 const typeLabels: Record<string, string> = {
   NEWS: "Actualité",
   EVENT: "Événement",
   MEETING: "Réunion publique",
+};
+
+const typeColors: Record<string, "emerald" | "amber" | "slate"> = {
+  NEWS: "emerald",
+  EVENT: "amber",
+  MEETING: "slate",
 };
 
 export default async function NewsDetailPage({
@@ -22,25 +30,32 @@ export default async function NewsDetailPage({
   if (!item) notFound();
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <nav className="mb-4 text-sm text-slate-500">
-        <Link href="/actualites" className="hover:underline">
-          Lu xew tay
-        </Link>{" "}
-        / <span className="text-slate-700">{item.title}</span>
-      </nav>
+    <div>
+      <PageHero
+        eyebrow={typeLabels[item.type]}
+        title={item.title}
+        subtitle={`${item.commune?.name ?? item.region?.name ?? "National"} · publié le ${item.publishedAt.toLocaleDateString("fr-FR")}`}
+        breadcrumb={
+          <>
+            <Link href="/actualites">Lu xew tay</Link>
+            <span>/</span>
+            <span className="text-white">{item.title}</span>
+          </>
+        }
+      />
 
-      <span className="rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-        {typeLabels[item.type]}
-      </span>
-      <h1 className="mt-2 text-2xl font-bold text-slate-900">{item.title}</h1>
-      <p className="mt-1 text-sm text-slate-500">
-        {item.commune?.name ?? item.region?.name ?? "National"} · publié par {item.author.name} le{" "}
-        {item.publishedAt.toLocaleDateString("fr-FR")}
-        {item.eventDate && ` · Date de l'événement : ${item.eventDate.toLocaleDateString("fr-FR")}`}
-      </p>
-
-      <p className="mt-6 whitespace-pre-wrap text-slate-700">{item.content}</p>
+      <div className="mx-auto max-w-3xl px-4 py-12">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+            <Badge color={typeColors[item.type]}>{typeLabels[item.type]}</Badge>
+            <span>publié par {item.author.name}</span>
+            {item.eventDate && (
+              <span>· Date de l&apos;événement : {item.eventDate.toLocaleDateString("fr-FR")}</span>
+            )}
+          </div>
+          <p className="mt-5 whitespace-pre-wrap leading-relaxed text-slate-700">{item.content}</p>
+        </div>
+      </div>
     </div>
   );
 }

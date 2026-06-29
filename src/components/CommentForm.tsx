@@ -16,12 +16,12 @@ export function CommentForm({ ideaId }: { ideaId: string }) {
         minLength={2}
         rows={2}
         placeholder="Ajouter un commentaire..."
-        className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
       />
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-slate-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-60"
+        className="rounded-full bg-slate-800 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
       >
         {pending ? "Envoi..." : "Commenter"}
       </button>

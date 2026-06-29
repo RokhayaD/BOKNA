@@ -1,10 +1,18 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { PageHero } from "@/components/PageHero";
+import { Badge } from "@/components/Badge";
 
 const typeLabels: Record<string, string> = {
   NEWS: "Actualité",
   EVENT: "Événement",
   MEETING: "Réunion publique",
+};
+
+const typeColors: Record<string, "emerald" | "amber" | "slate"> = {
+  NEWS: "emerald",
+  EVENT: "amber",
+  MEETING: "slate",
 };
 
 export default async function NewsListPage() {
@@ -14,34 +22,43 @@ export default async function NewsListPage() {
   });
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-slate-900">Lu xew tay</h1>
-      <p className="mt-1 text-slate-600">
-        Actualités des communes, événements locaux et réunions publiques.
-      </p>
+    <div>
+      <PageHero
+        eyebrow="Lu xew tay"
+        title="Actualités & vie locale"
+        subtitle="Actualités des communes, événements et réunions publiques pour rester connecté à votre territoire."
+        breadcrumb={<span className="text-white">Lu xew tay</span>}
+      />
 
-      <ul className="mt-6 space-y-4">
-        {news.map((item) => (
-          <li key={item.id} className="rounded-xl border border-slate-200 bg-white p-5">
-            <span className="rounded bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
-              {typeLabels[item.type]}
-            </span>
-            <Link
-              href={`/actualites/${item.id}`}
-              className="mt-2 block font-semibold text-slate-900 hover:text-emerald-700"
+      <div className="mx-auto max-w-4xl px-4 py-12">
+        <ul className="space-y-4">
+          {news.map((item) => (
+            <li
+              key={item.id}
+              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg"
             >
-              {item.title}
-            </Link>
-            <p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.content}</p>
-            <p className="mt-2 text-xs text-slate-500">
-              {item.commune?.name ?? item.region?.name ?? "National"} ·{" "}
-              {item.publishedAt.toLocaleDateString("fr-FR")}
-              {item.eventDate && ` · Date : ${item.eventDate.toLocaleDateString("fr-FR")}`}
-            </p>
-          </li>
-        ))}
-        {news.length === 0 && <p className="text-sm text-slate-500">Aucune actualité publiée.</p>}
-      </ul>
+              <Badge color={typeColors[item.type]}>{typeLabels[item.type]}</Badge>
+              <Link
+                href={`/actualites/${item.id}`}
+                className="mt-2 block text-lg font-bold text-slate-900 group-hover:text-emerald-700"
+              >
+                {item.title}
+              </Link>
+              <p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.content}</p>
+              <p className="mt-2 text-xs font-medium text-slate-500">
+                {item.commune?.name ?? item.region?.name ?? "National"} ·{" "}
+                {item.publishedAt.toLocaleDateString("fr-FR")}
+                {item.eventDate && ` · Date : ${item.eventDate.toLocaleDateString("fr-FR")}`}
+              </p>
+            </li>
+          ))}
+          {news.length === 0 && (
+            <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
+              Aucune actualité publiée.
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }

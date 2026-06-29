@@ -40,7 +40,7 @@ export function CommuneSelector({
       <div>
         <label className="mb-1 block text-sm font-medium text-slate-700">Région</label>
         <select
-          className="w-full rounded border border-slate-300 px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
           value={regionId}
           onChange={(e) => {
             setRegionId(e.target.value);
@@ -60,7 +60,7 @@ export function CommuneSelector({
       <div>
         <label className="mb-1 block text-sm font-medium text-slate-700">Département</label>
         <select
-          className="w-full rounded border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none disabled:bg-slate-100"
           value={departmentId}
           disabled={!regionId}
           onChange={(e) => {
@@ -82,7 +82,7 @@ export function CommuneSelector({
         <select
           name={name}
           required
-          className="w-full rounded border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100"
+          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none disabled:bg-slate-100"
           value={communeId}
           disabled={!departmentId}
           onChange={(e) => setCommuneId(e.target.value)}

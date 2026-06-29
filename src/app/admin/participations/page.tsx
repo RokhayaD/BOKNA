@@ -1,15 +1,17 @@
 import { prisma } from "@/lib/prisma";
 import { updateParticipationStatus } from "@/actions/participation";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { Badge } from "@/components/Badge";
 
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  APPROVED: "Approuvée",
-  REJECTED: "Rejetée",
+const statusBadge: Record<string, { label: string; color: "amber" | "emerald" | "red" }> = {
+  PENDING: { label: "En attente", color: "amber" },
+  APPROVED: { label: "Approuvée", color: "emerald" },
+  REJECTED: { label: "Rejetée", color: "red" },
 };
 
 const typeLabels: Record<string, string> = {
-  INITIATIVE: "Participation à une initiative",
-  MAYOR_CANDIDACY: "Membre de l'équipe municipale",
+  INITIATIVE: "🤝 Participation à une initiative",
+  MAYOR_CANDIDACY: "🏛️ Membre de l'équipe municipale",
 };
 
 export default async function AdminParticipationsPage() {
@@ -20,15 +22,16 @@ export default async function AdminParticipationsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">Demandes de participation</h1>
+      <AdminPageHeader
+        title="Demandes de participation"
+        description={`${requests.filter((r) => r.status === "PENDING").length} demande(s) en attente.`}
+      />
       <ul className="space-y-4">
         {requests.map((req) => (
-          <li key={req.id} className="rounded-xl border border-slate-200 bg-white p-5">
+          <li key={req.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-semibold text-slate-900">{typeLabels[req.type]}</h2>
-              <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
-                {statusLabels[req.status]}
-              </span>
+              <h2 className="font-bold text-slate-900">{typeLabels[req.type]}</h2>
+              <Badge color={statusBadge[req.status].color}>{statusBadge[req.status].label}</Badge>
             </div>
             <p className="mt-1 text-sm text-slate-500">
               {req.commune.name} · {req.user.name} ({req.user.email})
@@ -42,13 +45,13 @@ export default async function AdminParticipationsPage() {
             <p className="mt-2 text-sm text-slate-700">{req.message}</p>
 
             {req.status === "PENDING" && (
-              <form action={updateParticipationStatus} className="mt-3 flex gap-2">
+              <form action={updateParticipationStatus} className="mt-4 flex gap-2 border-t border-slate-100 pt-4">
                 <input type="hidden" name="requestId" value={req.id} />
                 <button
                   type="submit"
                   name="status"
                   value="APPROVED"
-                  className="rounded bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-600"
+                  className="rounded-full bg-emerald-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
                 >
                   Approuver
                 </button>
@@ -56,7 +59,7 @@ export default async function AdminParticipationsPage() {
                   type="submit"
                   name="status"
                   value="REJECTED"
-                  className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                  className="rounded-full bg-red-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-red-500"
                 >
                   Rejeter
                 </button>
@@ -64,7 +67,11 @@ export default async function AdminParticipationsPage() {
             )}
           </li>
         ))}
-        {requests.length === 0 && <p className="text-sm text-slate-500">Aucune demande.</p>}
+        {requests.length === 0 && (
+          <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
+            Aucune demande.
+          </li>
+        )}
       </ul>
     </div>
   );

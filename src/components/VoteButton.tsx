@@ -18,7 +18,7 @@ export function VoteButton({
     <button
       onClick={() => startTransition(() => voteIdea(ideaId))}
       disabled={pending}
-      className={`rounded px-4 py-2 text-sm font-semibold transition disabled:opacity-60 ${
+      className={`rounded-full px-5 py-2 text-sm font-semibold shadow-sm transition disabled:opacity-60 ${
         hasVoted
           ? "bg-emerald-700 text-white hover:bg-emerald-600"
           : "border border-emerald-700 text-emerald-700 hover:bg-emerald-50"

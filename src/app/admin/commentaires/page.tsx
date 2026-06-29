@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { moderateComment } from "@/actions/ideas";
+import { AdminPageHeader } from "@/components/AdminPageHeader";
+import { Badge } from "@/components/Badge";
 
-const statusLabels: Record<string, string> = {
-  PENDING: "En attente",
-  APPROVED: "Approuvé",
-  REJECTED: "Rejeté",
+const statusBadge: Record<string, { label: string; color: "amber" | "emerald" | "red" }> = {
+  PENDING: { label: "En attente", color: "amber" },
+  APPROVED: { label: "Approuvé", color: "emerald" },
+  REJECTED: { label: "Rejeté", color: "red" },
 };
 
 export default async function AdminCommentsPage() {
@@ -15,29 +17,30 @@ export default async function AdminCommentsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold text-slate-900">Modération des commentaires</h1>
+      <AdminPageHeader
+        title="Modération des commentaires"
+        description={`${comments.length} commentaire(s) au total.`}
+      />
       <ul className="space-y-3">
         {comments.map((comment) => (
-          <li key={comment.id} className="rounded-xl border border-slate-200 bg-white p-4">
+          <li key={comment.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm text-slate-500">
                 sur <span className="font-medium text-slate-700">{comment.idea.title}</span> · par{" "}
                 {comment.author.name}
               </p>
-              <span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
-                {statusLabels[comment.status]}
-              </span>
+              <Badge color={statusBadge[comment.status].color}>{statusBadge[comment.status].label}</Badge>
             </div>
             <p className="mt-2 text-sm text-slate-700">{comment.content}</p>
 
-            <form action={moderateComment} className="mt-3 flex gap-2">
+            <form action={moderateComment} className="mt-3 flex gap-2 border-t border-slate-100 pt-3">
               <input type="hidden" name="commentId" value={comment.id} />
               <input type="hidden" name="ideaId" value={comment.idea.id} />
               <button
                 type="submit"
                 name="status"
                 value="APPROVED"
-                className="rounded bg-emerald-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-600"
+                className="rounded-full bg-emerald-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
               >
                 Approuver
               </button>
@@ -45,14 +48,18 @@ export default async function AdminCommentsPage() {
                 type="submit"
                 name="status"
                 value="REJECTED"
-                className="rounded bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                className="rounded-full bg-red-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-red-500"
               >
                 Rejeter
               </button>
             </form>
           </li>
         ))}
-        {comments.length === 0 && <p className="text-sm text-slate-500">Aucun commentaire.</p>}
+        {comments.length === 0 && (
+          <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
+            Aucun commentaire.
+          </li>
+        )}
       </ul>
     </div>
   );
