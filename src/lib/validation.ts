@@ -19,11 +19,24 @@ export const commentSchema = z.object({
   content: z.string().min(2, "Le commentaire est trop court.").max(2000),
 });
 
-export const participationSchema = z.object({
-  communeId: z.string().min(1, "Veuillez choisir une commune."),
-  type: z.enum(["INITIATIVE", "MAYOR_CANDIDACY"]),
-  message: z.string().min(20, "Merci de détailler votre demande (20 caractères minimum)."),
-});
+export const participationSchema = z
+  .object({
+    communeId: z.string().min(1, "Veuillez choisir une commune."),
+    type: z.enum(["INITIATIVE", "MAYOR_CANDIDACY"]),
+    message: z.string().min(20, "Merci de détailler votre demande (20 caractères minimum)."),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    phone: z.string().optional(),
+  })
+  .refine(
+    (data) =>
+      data.type !== "MAYOR_CANDIDACY" ||
+      (!!data.firstName?.trim() && !!data.lastName?.trim() && !!data.phone?.trim()),
+    {
+      message: "Merci de renseigner votre nom, prénom et numéro de téléphone.",
+      path: ["firstName"],
+    }
+  );
 
 export const newsSchema = z.object({
   title: z.string().min(5),

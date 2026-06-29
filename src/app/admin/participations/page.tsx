@@ -9,7 +9,7 @@ const statusLabels: Record<string, string> = {
 
 const typeLabels: Record<string, string> = {
   INITIATIVE: "Participation à une initiative",
-  MAYOR_CANDIDACY: "Candidature maire (coalition Bokna)",
+  MAYOR_CANDIDACY: "Membre de l'équipe municipale",
 };
 
 export default async function AdminParticipationsPage() {
@@ -33,6 +33,12 @@ export default async function AdminParticipationsPage() {
             <p className="mt-1 text-sm text-slate-500">
               {req.commune.name} · {req.user.name} ({req.user.email})
             </p>
+            {(req.firstName || req.lastName || req.phone) && (
+              <p className="mt-1 text-sm text-slate-500">
+                {[req.firstName, req.lastName].filter(Boolean).join(" ")}
+                {req.phone && ` · ${req.phone}`}
+              </p>
+            )}
             <p className="mt-2 text-sm text-slate-700">{req.message}</p>
 
             {req.status === "PENDING" && (

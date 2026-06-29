@@ -76,16 +76,10 @@ export default async function CommunePage({
             Proposer une idée
           </Link>
           <Link
-            href={`/participation/nouvelle?communeId=${commune.id}&type=INITIATIVE`}
-            className="rounded border border-emerald-700 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50"
-          >
-            Participer à une initiative
-          </Link>
-          <Link
             href={`/participation/nouvelle?communeId=${commune.id}&type=MAYOR_CANDIDACY`}
             className="rounded border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100"
           >
-            Me présenter comme maire (coalition Bokna)
+            Je veux devenir membre de l&apos;équipe municipale
           </Link>
         </div>
       </div>

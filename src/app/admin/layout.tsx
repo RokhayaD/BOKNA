@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 
 const links = [
   { href: "/admin", label: "Tableau de bord" },
@@ -9,7 +11,11 @@ const links = [
   { href: "/admin/geo", label: "Régions / communes" },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+  const session = await auth();
+  if (!session?.user) redirect("/login?callbackUrl=/admin");
+  if (session.user.role !== "ADMIN") redirect("/");
+
   return (
     <div className="mx-auto flex max-w-6xl gap-8 px-4 py-8">
       <aside className="w-56 shrink-0">

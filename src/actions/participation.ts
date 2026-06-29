@@ -18,6 +18,9 @@ export async function createParticipationRequest(
     communeId: formData.get("communeId"),
     type: formData.get("type"),
     message: formData.get("message"),
+    firstName: formData.get("firstName") || undefined,
+    lastName: formData.get("lastName") || undefined,
+    phone: formData.get("phone") || undefined,
   });
 
   if (!parsed.success) {

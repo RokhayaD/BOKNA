@@ -166,6 +166,9 @@ model ParticipationRequest {
   commune   Commune           @relation(fields: [communeId], references: [id], onDelete: Cascade)
   type      ParticipationType
   message   String
+  firstName String?
+  lastName  String?
+  phone     String?
   status    ModerationStatus  @default(PENDING)
   createdAt DateTime          @default(now())
 }
