@@ -5,7 +5,7 @@ import { createNews } from "@/actions/news";
 import type { GeoTree } from "@/lib/geo";
 
 const inputClass =
-  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none";
+  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none";
 
 export function NewsForm({ tree }: { tree: GeoTree }) {
   const [state, formAction, pending] = useActionState(createNews, {});
@@ -77,7 +77,7 @@ export function NewsForm({ tree }: { tree: GeoTree }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full bg-emerald-700 px-6 py-2.5 font-semibold text-white shadow-sm transition hover:bg-emerald-600 disabled:opacity-60"
+        className="rounded-full bg-brand-700 px-6 py-2.5 font-semibold text-white shadow-sm transition hover:bg-brand-600 disabled:opacity-60"
       >
         {pending ? "Publication..." : "Publier"}
       </button>

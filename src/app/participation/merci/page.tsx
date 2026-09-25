@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ParticipationThanksPage() {
   return (
     <div className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center px-4 py-16 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-3xl">
+      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-100 text-3xl">
         ✅
       </div>
       <h1 className="mt-6 text-2xl font-bold text-slate-900">Demande envoyée !</h1>
@@ -13,7 +13,7 @@ export default function ParticipationThanksPage() {
       </p>
       <Link
         href="/"
-        className="mt-6 inline-block rounded-full bg-emerald-700 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-700/20 transition hover:-translate-y-0.5 hover:bg-emerald-600"
+        className="mt-6 inline-block rounded-full bg-accent-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-accent-600/20 transition hover:-translate-y-0.5 hover:bg-accent-700"
       >
         Retour à l&apos;accueil
       </Link>

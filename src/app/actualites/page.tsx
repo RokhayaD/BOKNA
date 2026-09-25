@@ -35,12 +35,12 @@ export default async function NewsListPage() {
           {news.map((item) => (
             <li
               key={item.id}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg"
+              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg"
             >
               <Badge color={typeColors[item.type]}>{typeLabels[item.type]}</Badge>
               <Link
                 href={`/actualites/${item.id}`}
-                className="mt-2 block text-lg font-bold text-slate-900 group-hover:text-emerald-700"
+                className="mt-2 block text-lg font-bold text-slate-900 group-hover:text-brand-700"
               >
                 {item.title}
               </Link>

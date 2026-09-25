@@ -29,12 +29,12 @@ export default async function AdminGeoPage() {
                     {dept.communes.map((commune) => (
                       <li
                         key={commune.id}
-                        className="flex items-center justify-between rounded-lg px-2 py-1 text-sm transition hover:bg-emerald-50"
+                        className="flex items-center justify-between rounded-lg px-2 py-1 text-sm transition hover:bg-brand-50"
                       >
                         <span className="text-slate-600">{commune.name}</span>
                         <Link
                           href={`/admin/geo/${commune.id}`}
-                          className="text-xs font-semibold text-emerald-700 hover:underline"
+                          className="text-xs font-semibold text-brand-700 hover:underline"
                         >
                           Modifier
                         </Link>

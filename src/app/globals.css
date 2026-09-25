@@ -10,6 +10,31 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Couleurs de la charte Bokna : vert #338345 (brand-700), orange #dd431f (accent-600) */
+  --color-brand-50: #f5f9f6;
+  --color-brand-100: #e7f0e9;
+  --color-brand-200: #cce0d1;
+  --color-brand-300: #a9cbb1;
+  --color-brand-400: #81b28c;
+  --color-brand-500: #589966;
+  --color-brand-600: #478f58;
+  --color-brand-700: #338345;
+  --color-brand-800: #296937;
+  --color-brand-900: #20512b;
+  --color-brand-950: #14341c;
+
+  --color-accent-50: #fcede9;
+  --color-accent-100: #f9e0da;
+  --color-accent-200: #f5c9bf;
+  --color-accent-300: #f0ab9a;
+  --color-accent-400: #e98770;
+  --color-accent-500: #e36345;
+  --color-accent-600: #dd431f;
+  --color-accent-700: #bc391a;
+  --color-accent-800: #9b2f16;
+  --color-accent-900: #732310;
+  --color-accent-950: #421409;
 }
 
 body {

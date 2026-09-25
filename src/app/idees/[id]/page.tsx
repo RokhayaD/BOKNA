@@ -71,7 +71,7 @@ export default async function IdeaDetailPage({
           <p className="whitespace-pre-wrap leading-relaxed text-slate-700">{idea.description}</p>
 
           {idea.adminReply && (
-            <div className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800 ring-1 ring-emerald-200">
+            <div className="mt-4 rounded-xl bg-brand-50 p-4 text-sm text-brand-800 ring-1 ring-brand-200">
               <p className="font-semibold">Réponse de l&apos;administration :</p>
               <p className="mt-1">{idea.adminReply}</p>
             </div>
@@ -107,7 +107,7 @@ export default async function IdeaDetailPage({
             </div>
           ) : (
             <p className="mt-4 text-sm text-slate-500">
-              <Link href="/login" className="font-semibold text-emerald-700 hover:underline">
+              <Link href="/login" className="font-semibold text-brand-700 hover:underline">
                 Connectez-vous
               </Link>{" "}
               pour commenter.

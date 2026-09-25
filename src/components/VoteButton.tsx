@@ -20,8 +20,8 @@ export function VoteButton({
       disabled={pending}
       className={`rounded-full px-5 py-2 text-sm font-semibold shadow-sm transition disabled:opacity-60 ${
         hasVoted
-          ? "bg-emerald-700 text-white hover:bg-emerald-600"
-          : "border border-emerald-700 text-emerald-700 hover:bg-emerald-50"
+          ? "bg-brand-700 text-white hover:bg-brand-600"
+          : "border border-brand-700 text-brand-700 hover:bg-brand-50"
       }`}
     >
       {hasVoted ? "✓ Soutenu" : "Soutenir"} ({voteCount})

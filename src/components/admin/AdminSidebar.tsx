@@ -16,13 +16,13 @@ export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 shrink-0 bg-emerald-950 text-emerald-50">
+    <aside className="w-64 shrink-0 bg-brand-950 text-brand-50">
       <div className="flex h-full flex-col px-4 py-6">
         <Link href="/" className="mb-8 flex items-center gap-2 px-2">
-          <span className="rounded-lg bg-white px-2 py-1 text-lg font-bold text-emerald-800">
+          <span className="rounded-lg bg-white px-2 py-1 text-lg font-bold text-brand-800">
             Bokna
           </span>
-          <span className="text-xs font-semibold tracking-wider text-emerald-300 uppercase">
+          <span className="text-xs font-semibold tracking-wider text-brand-300 uppercase">
             Admin
           </span>
         </Link>
@@ -36,8 +36,8 @@ export function AdminSidebar() {
                 href={link.href}
                 className={`flex items-center gap-3 rounded-xl px-3 py-2.5 font-medium transition ${
                   isActive
-                    ? "bg-emerald-700 text-white shadow-sm"
-                    : "text-emerald-200/80 hover:bg-emerald-900 hover:text-white"
+                    ? "bg-brand-700 text-white shadow-sm"
+                    : "text-brand-200/80 hover:bg-brand-900 hover:text-white"
                 }`}
               >
                 <span aria-hidden>{link.icon}</span>
@@ -49,7 +49,7 @@ export function AdminSidebar() {
 
         <Link
           href="/"
-          className="mt-4 flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-emerald-300/70 transition hover:bg-emerald-900 hover:text-white"
+          className="mt-4 flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium text-brand-300/70 transition hover:bg-brand-900 hover:text-white"
         >
           <span aria-hidden>←</span> Retour au site
         </Link>

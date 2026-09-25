@@ -47,7 +47,7 @@ export default async function AdminDashboardPage() {
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((s, i) => (
           <div key={s.label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-xl">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-xl">
               {statIcons[i]}
             </div>
             <p className="mt-3 text-2xl font-bold text-slate-900">{s.value}</p>
@@ -66,11 +66,11 @@ export default async function AdminDashboardPage() {
                   <span className="font-medium text-slate-700">
                     {i + 1}. {c.name}
                   </span>
-                  <span className="font-semibold text-emerald-700">{c._count.ideas} idée(s)</span>
+                  <span className="font-semibold text-brand-700">{c._count.ideas} idée(s)</span>
                 </div>
                 <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
                   <div
-                    className="h-full rounded-full bg-emerald-600"
+                    className="h-full rounded-full bg-brand-600"
                     style={{ width: `${(c._count.ideas / maxCommuneCount) * 100}%` }}
                   />
                 </div>
@@ -88,11 +88,11 @@ export default async function AdminDashboardPage() {
               <li key={name}>
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-slate-700">{name}</span>
-                  <span className="font-semibold text-emerald-700">{count}</span>
+                  <span className="font-semibold text-brand-700">{count}</span>
                 </div>
                 <div className="mt-1 h-2 overflow-hidden rounded-full bg-slate-100">
                   <div
-                    className="h-full rounded-full bg-emerald-600"
+                    className="h-full rounded-full bg-brand-600"
                     style={{ width: `${(count / maxRegionCount) * 100}%` }}
                   />
                 </div>

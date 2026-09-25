@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const inputClass =
-  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none";
+  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none";
 
 export function LoginForm() {
   const router = useRouter();
@@ -37,7 +37,7 @@ export function LoginForm() {
   return (
     <form action={handleSubmit} className="space-y-4">
       {justRegistered && (
-        <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700 ring-1 ring-emerald-200">
+        <p className="rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-700 ring-1 ring-brand-200">
           Compte créé avec succès, vous pouvez vous connecter.
         </p>
       )}
@@ -60,7 +60,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-emerald-700 px-4 py-3 font-semibold text-white shadow-lg shadow-emerald-700/20 transition hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-xl disabled:opacity-60"
+        className="w-full rounded-full bg-accent-600 px-4 py-3 font-semibold text-white shadow-lg shadow-accent-600/20 transition hover:-translate-y-0.5 hover:bg-accent-700 hover:shadow-xl disabled:opacity-60"
       >
         {pending ? "Connexion..." : "Se connecter"}
       </button>

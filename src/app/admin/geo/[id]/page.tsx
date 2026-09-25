@@ -19,7 +19,7 @@ export default async function EditCommunePage({
 
   return (
     <div>
-      <Link href="/admin/geo" className="mb-4 inline-block text-sm font-medium text-emerald-700 hover:underline">
+      <Link href="/admin/geo" className="mb-4 inline-block text-sm font-medium text-brand-700 hover:underline">
         ← Régions / communes
       </Link>
       <AdminPageHeader
@@ -37,7 +37,7 @@ export default async function EditCommunePage({
               type="number"
               name="population"
               defaultValue={commune.population ?? ""}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
             />
           </div>
 
@@ -47,13 +47,13 @@ export default async function EditCommunePage({
               name="description"
               defaultValue={commune.description ?? ""}
               rows={5}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
-            className="rounded-full bg-emerald-700 px-6 py-2.5 font-semibold text-white shadow-sm transition hover:bg-emerald-600"
+            className="rounded-full bg-brand-700 px-6 py-2.5 font-semibold text-white shadow-sm transition hover:bg-brand-600"
           >
             Enregistrer
           </button>

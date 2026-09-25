@@ -48,9 +48,9 @@ export default async function ProfilePage() {
             {user.ideas.map((idea) => (
               <li
                 key={idea.id}
-                className="flex items-center justify-between rounded-xl border border-slate-100 p-3 text-sm transition hover:border-emerald-200 hover:bg-emerald-50/40"
+                className="flex items-center justify-between rounded-xl border border-slate-100 p-3 text-sm transition hover:border-brand-200 hover:bg-brand-50/40"
               >
-                <Link href={`/idees/${idea.id}`} className="font-semibold text-slate-900 hover:text-emerald-700">
+                <Link href={`/idees/${idea.id}`} className="font-semibold text-slate-900 hover:text-brand-700">
                   {idea.title}
                 </Link>
                 <Badge color={statusColors[idea.status]}>{statusLabels[idea.status]}</Badge>

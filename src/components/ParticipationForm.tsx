@@ -6,7 +6,7 @@ import type { GeoTree } from "@/lib/geo";
 import { CommuneSelector } from "@/components/CommuneSelector";
 
 const inputClass =
-  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none";
+  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none";
 
 export function ParticipationForm({
   tree,
@@ -34,7 +34,7 @@ export function ParticipationForm({
           onClick={() => setType("INITIATIVE")}
           className={`rounded-xl border p-3 text-left text-sm font-medium transition ${
             type === "INITIATIVE"
-              ? "border-emerald-500 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-500"
+              ? "border-brand-500 bg-brand-50 text-brand-800 ring-1 ring-brand-500"
               : "border-slate-200 text-slate-600 hover:border-slate-300"
           }`}
         >
@@ -45,7 +45,7 @@ export function ParticipationForm({
           onClick={() => setType("MAYOR_CANDIDACY")}
           className={`rounded-xl border p-3 text-left text-sm font-medium transition ${
             type === "MAYOR_CANDIDACY"
-              ? "border-emerald-500 bg-emerald-50 text-emerald-800 ring-1 ring-emerald-500"
+              ? "border-brand-500 bg-brand-50 text-brand-800 ring-1 ring-brand-500"
               : "border-slate-200 text-slate-600 hover:border-slate-300"
           }`}
         >
@@ -97,7 +97,7 @@ export function ParticipationForm({
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-emerald-700 px-4 py-3 font-semibold text-white shadow-lg shadow-emerald-700/20 transition hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-xl disabled:opacity-60"
+        className="w-full rounded-full bg-accent-600 px-4 py-3 font-semibold text-white shadow-lg shadow-accent-600/20 transition hover:-translate-y-0.5 hover:bg-accent-700 hover:shadow-xl disabled:opacity-60"
       >
         {pending ? "Envoi..." : "Envoyer ma demande"}
       </button>

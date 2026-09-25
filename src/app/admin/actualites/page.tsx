@@ -30,7 +30,7 @@ export default async function AdminNewsPage() {
         action={
           <Link
             href="/admin/actualites/nouvelle"
-            className="rounded-full bg-emerald-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-600"
+            className="rounded-full bg-brand-700 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-600"
           >
             + Publier une actualité
           </Link>

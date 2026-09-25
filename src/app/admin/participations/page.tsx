@@ -51,7 +51,7 @@ export default async function AdminParticipationsPage() {
                   type="submit"
                   name="status"
                   value="APPROVED"
-                  className="rounded-full bg-emerald-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
+                  className="rounded-full bg-brand-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
                 >
                   Approuver
                 </button>

@@ -16,7 +16,7 @@ export function CommentForm({ ideaId }: { ideaId: string }) {
         minLength={2}
         rows={2}
         placeholder="Ajouter un commentaire..."
-        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
       />
       <button
         type="submit"

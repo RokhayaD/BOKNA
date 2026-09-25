@@ -13,7 +13,7 @@ export default function LoginPage() {
       </Suspense>
       <p className="mt-6 text-sm text-slate-600">
         Pas encore de compte ?{" "}
-        <Link href="/register" className="font-semibold text-emerald-700 hover:underline">
+        <Link href="/register" className="font-semibold text-brand-700 hover:underline">
           Inscrivez-vous
         </Link>
       </p>

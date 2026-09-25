@@ -42,14 +42,14 @@ export default async function AdminIdeasPage() {
                 defaultValue={idea.adminReply ?? ""}
                 rows={2}
                 placeholder="Réponse de l'administration (optionnel)"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
               />
               <div className="flex gap-2">
                 <button
                   type="submit"
                   name="status"
                   value="APPROVED"
-                  className="rounded-full bg-emerald-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-emerald-600"
+                  className="rounded-full bg-brand-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
                 >
                   Approuver
                 </button>

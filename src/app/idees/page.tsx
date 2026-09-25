@@ -45,7 +45,7 @@ export default async function IdeasPage({
         actions={
           <Link
             href="/idees/nouvelle"
-            className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-emerald-800 shadow-lg shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:shadow-xl"
+            className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 shadow-lg shadow-brand-950/30 transition hover:-translate-y-0.5 hover:shadow-xl"
           >
             + Proposer une idée
           </Link>
@@ -90,11 +90,11 @@ export default async function IdeasPage({
           {ideas.map((idea) => (
             <li
               key={idea.id}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-lg"
+              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg"
             >
               <Link
                 href={`/idees/${idea.id}`}
-                className="text-lg font-bold text-slate-900 group-hover:text-emerald-700"
+                className="text-lg font-bold text-slate-900 group-hover:text-brand-700"
               >
                 {idea.title}
               </Link>

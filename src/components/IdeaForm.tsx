@@ -33,7 +33,7 @@ export function IdeaForm({ tree, defaultCommuneId }: { tree: GeoTree; defaultCom
         <select
           name="category"
           required
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
         >
           {categories.map((c) => (
             <option key={c.value} value={c.value}>
@@ -49,7 +49,7 @@ export function IdeaForm({ tree, defaultCommuneId }: { tree: GeoTree; defaultCom
           name="title"
           required
           minLength={5}
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
         />
       </div>
 
@@ -60,14 +60,14 @@ export function IdeaForm({ tree, defaultCommuneId }: { tree: GeoTree; defaultCom
           required
           minLength={20}
           rows={5}
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
         />
       </div>
 
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-full bg-emerald-700 px-4 py-3 font-semibold text-white shadow-lg shadow-emerald-700/20 transition hover:-translate-y-0.5 hover:bg-emerald-600 hover:shadow-xl disabled:opacity-60"
+        className="w-full rounded-full bg-accent-600 px-4 py-3 font-semibold text-white shadow-lg shadow-accent-600/20 transition hover:-translate-y-0.5 hover:bg-accent-700 hover:shadow-xl disabled:opacity-60"
       >
         {pending ? "Envoi..." : "Soumettre l'idée"}
       </button>
