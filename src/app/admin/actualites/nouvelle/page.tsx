@@ -7,8 +7,12 @@ export default async function NewNewsPage() {
 
   return (
     <div>
-      <AdminPageHeader title="Publier une actualité" />
-      <div className="max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <AdminPageHeader
+        title="Publier une actualité"
+        description="Actualité, événement ou réunion publique, à l'échelle nationale, régionale ou communale."
+        back={{ href: "/admin/actualites", label: "Actualités" }}
+      />
+      <div className="card max-w-3xl p-6 sm:p-8">
         <NewsForm tree={tree} />
       </div>
     </div>

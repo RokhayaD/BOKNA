@@ -1,19 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { PageHero } from "@/components/PageHero";
-import { Badge } from "@/components/Badge";
-
-const typeLabels: Record<string, string> = {
-  NEWS: "Actualité",
-  EVENT: "Événement",
-  MEETING: "Réunion publique",
-};
-
-const typeColors: Record<string, "emerald" | "amber" | "slate"> = {
-  NEWS: "emerald",
-  EVENT: "amber",
-  MEETING: "slate",
-};
+import { PageHeader } from "@/components/PageHeader";
+import { Badge } from "@/components/ui/Badge";
+import { Icon } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { formatDate, newsTypes } from "@/lib/labels";
 
 export default async function NewsListPage() {
   const news = await prisma.news.findMany({
@@ -23,41 +14,62 @@ export default async function NewsListPage() {
 
   return (
     <div>
-      <PageHero
+      <PageHeader
         eyebrow="Lu xew tay"
         title="Actualités & vie locale"
         subtitle="Actualités des communes, événements et réunions publiques pour rester connecté à votre territoire."
-        breadcrumb={<span className="text-white">Lu xew tay</span>}
+        breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Lu xew tay" }]}
       />
 
-      <div className="mx-auto max-w-4xl px-4 py-12">
-        <ul className="space-y-4">
-          {news.map((item) => (
-            <li
-              key={item.id}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg"
-            >
-              <Badge color={typeColors[item.type]}>{typeLabels[item.type]}</Badge>
-              <Link
-                href={`/actualites/${item.id}`}
-                className="mt-2 block text-lg font-bold text-slate-900 group-hover:text-brand-700"
-              >
-                {item.title}
-              </Link>
-              <p className="mt-1 line-clamp-2 text-sm text-slate-600">{item.content}</p>
-              <p className="mt-2 text-xs font-medium text-slate-500">
-                {item.commune?.name ?? item.region?.name ?? "National"} ·{" "}
-                {item.publishedAt.toLocaleDateString("fr-FR")}
-                {item.eventDate && ` · Date : ${item.eventDate.toLocaleDateString("fr-FR")}`}
-              </p>
-            </li>
-          ))}
-          {news.length === 0 && (
-            <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-              Aucune actualité publiée.
-            </li>
-          )}
-        </ul>
+      <div className="container-page py-10 sm:py-12">
+        {news.length === 0 ? (
+          <EmptyState icon="newspaper" title="Aucune actualité publiée">
+            Les actualités, événements et réunions publiques apparaîtront ici.
+          </EmptyState>
+        ) : (
+          <ul className="mx-auto max-w-4xl space-y-4">
+            {news.map((item) => (
+              <li key={item.id}>
+                <Link href={`/actualites/${item.id}`} className="card card-interactive group flex gap-5 p-5 sm:gap-6 sm:p-6">
+                  <time
+                    dateTime={item.publishedAt.toISOString()}
+                    className="flex w-14 shrink-0 flex-col items-center justify-center self-start rounded-xl border border-stone-200 bg-paper py-2.5 sm:w-16"
+                  >
+                    <span className="font-display text-2xl leading-none font-semibold text-ink">
+                      {item.publishedAt.getDate()}
+                    </span>
+                    <span className="mt-1 text-[11px] font-semibold tracking-wide text-stone-500 uppercase">
+                      {formatDate(item.publishedAt, { month: "short" }).replace(".", "")}
+                    </span>
+                  </time>
+                  <div className="min-w-0 flex-1">
+                    <Badge tone={newsTypes[item.type].tone} dot>
+                      {newsTypes[item.type].label}
+                    </Badge>
+                    <h2 className="mt-2.5 text-lg leading-snug font-semibold group-hover:text-brand-700">{item.title}</h2>
+                    <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-stone-600">{item.content}</p>
+                    <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-stone-500">
+                      <span className="flex items-center gap-1.5">
+                        <Icon name="map-pin" className="size-3.5" />
+                        {item.commune?.name ?? item.region?.name ?? "National"}
+                      </span>
+                      {item.eventDate && (
+                        <span className="flex items-center gap-1.5 font-medium text-accent-700">
+                          <Icon name="calendar" className="size-3.5" />
+                          Le {formatDate(item.eventDate)}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <Icon
+                    name="arrow-right"
+                    className="hidden size-4 shrink-0 self-center text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700 sm:block"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

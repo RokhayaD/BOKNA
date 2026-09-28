@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { PageHero } from "@/components/PageHero";
+import { PageHeader } from "@/components/PageHeader";
+import { Icon } from "@/components/ui/Icon";
+import { plural } from "@/lib/labels";
 
 export default async function RegionPage({
   params,
@@ -22,48 +24,42 @@ export default async function RegionPage({
 
   if (!region) notFound();
 
+  const communeTotal = region.departments.reduce((sum, d) => sum + d._count.communes, 0);
+
   return (
     <div>
-      <PageHero
+      <PageHeader
         eyebrow={`${region.name} la bokk`}
-        title={region.name}
+        title={`Région de ${region.name}`}
         subtitle="Choisissez un département pour découvrir ses communes, leurs projets et leurs idées citoyennes."
-        backgroundImage={`/regions/${region.slug.toUpperCase()}.jpeg`}
-        breadcrumb={
-          <>
-            <Link href="/">Régions</Link>
-            <span>/</span>
-            <span className="text-white">{region.name}</span>
-          </>
-        }
+        image={`/regions/${region.slug.toUpperCase()}.jpeg`}
+        breadcrumb={[{ label: "Régions", href: "/" }, { label: region.name }]}
+        meta={[
+          { icon: "layers", label: plural(region.departments.length, "département") },
+          { icon: "building", label: plural(communeTotal, "commune") },
+        ]}
       />
 
-      <section className="mx-auto max-w-5xl px-4 py-12">
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <section className="container-page py-12 sm:py-16">
+        <h2 className="text-xl font-semibold">Départements</h2>
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {region.departments.map((dept) => (
             <Link
               key={dept.id}
               href={`/regions/${region.slug}/${dept.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ring-1 ring-slate-900/5 transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl"
+              className="card card-interactive group flex items-center gap-4 p-5"
             >
-              <div
-                aria-hidden
-                className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-brand-50 transition group-hover:scale-150 group-hover:bg-brand-100"
+              <span className="icon-tile">
+                <Icon name="layers" className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-display text-base font-semibold text-ink">{dept.name}</span>
+                <span className="block text-sm text-stone-500">{plural(dept._count.communes, "commune")}</span>
+              </span>
+              <Icon
+                name="arrow-right"
+                className="size-4 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700"
               />
-              <div className="relative">
-                <h2 className="text-lg font-bold text-slate-900 group-hover:text-brand-700">
-                  {dept.name}
-                </h2>
-                <p className="mt-1 text-sm text-slate-500">
-                  {dept._count.communes} commune{dept._count.communes > 1 ? "s" : ""}
-                </p>
-                <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 opacity-0 transition group-hover:opacity-100">
-                  Explorer
-                  <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                    →
-                  </span>
-                </span>
-              </div>
             </Link>
           ))}
         </div>

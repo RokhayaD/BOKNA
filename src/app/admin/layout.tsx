@@ -8,10 +8,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   if (session.user.role !== "ADMIN") redirect("/");
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] bg-slate-50">
-      <AdminSidebar />
-      <div className="flex-1 px-6 py-8 lg:px-10">
-        <div className="mx-auto max-w-5xl">{children}</div>
+    <div className="container-page py-8 sm:py-10">
+      <div className="lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-10">
+        <AdminSidebar />
+        <div className="min-w-0">{children}</div>
       </div>
     </div>
   );

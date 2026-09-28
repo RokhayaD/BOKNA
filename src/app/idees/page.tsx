@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
-import { PageHero } from "@/components/PageHero";
-import { Badge } from "@/components/Badge";
-
-const categoryLabels: Record<string, string> = {
-  AMELIORATION: "Amélioration",
-  SIGNALEMENT: "Signalement",
-  INVESTISSEMENT: "Investissement",
-  PROJET_COMMUNAUTAIRE: "Projet communautaire",
-};
+import { PageHeader } from "@/components/PageHeader";
+import { Badge } from "@/components/ui/Badge";
+import { Icon } from "@/components/ui/Icon";
+import { Avatar } from "@/components/ui/Avatar";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { AutoSubmitSelect } from "@/components/AutoSubmitSelect";
+import { ideaCategories, plural } from "@/lib/labels";
 
 export default async function IdeasPage({
   searchParams,
@@ -35,88 +33,126 @@ export default async function IdeasPage({
     prisma.commune.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
   ]);
 
+  const hasFilters = Boolean(communeId || category);
+
   return (
     <div>
-      <PageHero
+      <PageHeader
         eyebrow="Boîte à idées"
-        title="Vos idées pour le Sénégal"
-        subtitle="Améliorations, signalements, investissements ou projets communautaires : proposez, soutenez et commentez les idées de votre commune."
-        breadcrumb={<span className="text-white">Boîte à idées</span>}
+        title="Les idées des citoyens"
+        subtitle="Améliorations, signalements, investissements ou projets communautaires : découvrez, soutenez et commentez les propositions pour votre commune."
+        breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Boîte à idées" }]}
         actions={
-          <Link
-            href="/idees/nouvelle"
-            className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 shadow-lg shadow-brand-950/30 transition hover:-translate-y-0.5 hover:shadow-xl"
-          >
-            + Proposer une idée
+          <Link href="/idees/nouvelle" className="btn btn-accent btn-lg">
+            <Icon name="plus" className="size-4" />
+            Proposer une idée
           </Link>
         }
       />
 
-      <div className="mx-auto max-w-5xl px-4 py-12">
-        <form className="mb-8 flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <select
-            name="communeId"
-            defaultValue={communeId ?? ""}
-            className="rounded-full border border-slate-300 px-4 py-2 text-sm"
-          >
+      <div className="container-page py-10 sm:py-12">
+        <form className="card flex flex-col gap-3 p-3 sm:flex-row sm:items-center">
+          <label className="sr-only" htmlFor="filter-commune">
+            Commune
+          </label>
+          <AutoSubmitSelect id="filter-commune" name="communeId" defaultValue={communeId ?? ""} className="input sm:max-w-64">
             <option value="">Toutes les communes</option>
             {communes.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
               </option>
             ))}
-          </select>
-          <select
-            name="category"
-            defaultValue={category ?? ""}
-            className="rounded-full border border-slate-300 px-4 py-2 text-sm"
-          >
+          </AutoSubmitSelect>
+          <label className="sr-only" htmlFor="filter-category">
+            Catégorie
+          </label>
+          <AutoSubmitSelect id="filter-category" name="category" defaultValue={category ?? ""} className="input sm:max-w-64">
             <option value="">Toutes les catégories</option>
-            {Object.entries(categoryLabels).map(([value, label]) => (
+            {Object.entries(ideaCategories).map(([value, c]) => (
               <option key={value} value={value}>
-                {label}
+                {c.label}
               </option>
             ))}
-          </select>
-          <button
-            type="submit"
-            className="rounded-full bg-slate-800 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
-          >
-            Filtrer
-          </button>
+          </AutoSubmitSelect>
+          <noscript>
+            <button type="submit" className="btn btn-secondary">
+              Filtrer
+            </button>
+          </noscript>
+          <div className="flex items-center justify-between gap-3 px-1 sm:ml-auto">
+            <span className="text-sm text-stone-500">{plural(ideas.length, "idée")}</span>
+            {hasFilters && (
+              <Link href="/idees" className="btn btn-ghost btn-sm">
+                <Icon name="rotate-ccw" className="size-3.5" />
+                Réinitialiser
+              </Link>
+            )}
+          </div>
         </form>
 
-        <ul className="space-y-4">
-          {ideas.map((idea) => (
-            <li
-              key={idea.id}
-              className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-lg"
+        {ideas.length === 0 ? (
+          <div className="mt-6">
+            <EmptyState
+              icon="lightbulb"
+              title={hasFilters ? "Aucune idée ne correspond à ces filtres" : "Aucune idée publiée pour le moment"}
+              action={
+                hasFilters ? (
+                  <Link href="/idees" className="btn btn-secondary btn-sm">
+                    Voir toutes les idées
+                  </Link>
+                ) : (
+                  <Link href="/idees/nouvelle" className="btn btn-primary btn-sm">
+                    Proposer une idée
+                  </Link>
+                )
+              }
             >
-              <Link
-                href={`/idees/${idea.id}`}
-                className="text-lg font-bold text-slate-900 group-hover:text-brand-700"
-              >
-                {idea.title}
-              </Link>
-              <p className="mt-1 line-clamp-2 text-sm text-slate-600">{idea.description}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                <Badge>{categoryLabels[idea.category]}</Badge>
-                <span>{idea.commune.name}</span>
-                <span>·</span>
-                <span>par {idea.author.name}</span>
-                <span className="ml-auto flex items-center gap-3 font-medium">
-                  <span>👍 {idea._count.votes}</span>
-                  <span>💬 {idea._count.comments}</span>
-                </span>
-              </div>
-            </li>
-          ))}
-          {ideas.length === 0 && (
-            <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-              Aucune idée ne correspond à ces filtres.
-            </li>
-          )}
-        </ul>
+              {hasFilters ? "Essayez une autre commune ou une autre catégorie." : "Soyez le premier à partager une idée."}
+            </EmptyState>
+          </div>
+        ) : (
+          <ul className="mt-6 grid gap-4 md:grid-cols-2">
+            {ideas.map((idea) => {
+              const cat = ideaCategories[idea.category];
+              return (
+                <li key={idea.id}>
+                  <Link href={`/idees/${idea.id}`} className="card card-interactive group flex h-full flex-col p-6">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge tone="brand">
+                        <Icon name={cat.icon} className="size-3.5" />
+                        {cat.label}
+                      </Badge>
+                      <span className="flex items-center gap-1 text-xs text-stone-500">
+                        <Icon name="map-pin" className="size-3.5" />
+                        {idea.commune.name}
+                      </span>
+                    </div>
+                    <h2 className="mt-4 text-lg leading-snug font-semibold group-hover:text-brand-700">{idea.title}</h2>
+                    <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-stone-600">{idea.description}</p>
+                    <div className="mt-auto pt-5">
+                      <div className="flex items-center justify-between gap-3 border-t border-stone-100 pt-4">
+                        <span className="flex min-w-0 items-center gap-2 text-sm text-stone-600">
+                          <Avatar name={idea.author.name} size="sm" />
+                          <span className="truncate">{idea.author.name}</span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-4 text-sm font-medium text-stone-500">
+                          <span className="flex items-center gap-1.5" title="Soutiens">
+                            <Icon name="thumbs-up" className="size-4" />
+                            {idea._count.votes}
+                          </span>
+                          <span className="flex items-center gap-1.5" title="Commentaires">
+                            <Icon name="message" className="size-4" />
+                            {idea._count.comments}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
     </div>
   );

@@ -2,21 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { CommuneMapLoader as CommuneMap } from "@/components/CommuneMapLoader";
-import { PageHero } from "@/components/PageHero";
-import { Badge } from "@/components/Badge";
-
-const categoryLabels: Record<string, string> = {
-  AMELIORATION: "Amélioration",
-  SIGNALEMENT: "Signalement",
-  INVESTISSEMENT: "Investissement",
-  PROJET_COMMUNAUTAIRE: "Projet communautaire",
-};
-
-const projectStatusBadge: Record<string, { label: string; color: "emerald" | "amber" | "slate" }> = {
-  PLANNED: { label: "Planifié", color: "slate" },
-  ONGOING: { label: "En cours", color: "amber" },
-  DONE: { label: "Terminé", color: "emerald" },
-};
+import { PageHeader } from "@/components/PageHeader";
+import { Badge } from "@/components/ui/Badge";
+import { Icon } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { ideaCategories, projectStatus } from "@/lib/labels";
 
 export default async function CommunePage({
   params,
@@ -42,174 +32,191 @@ export default async function CommunePage({
 
   if (!commune) notFound();
 
-  const stats = [
-    { label: "Région", value: commune.department.region.name },
-    { label: "Département", value: commune.department.name },
-    { label: "Population", value: commune.population ? commune.population.toLocaleString("fr-FR") : "N/D" },
-    { label: "Citoyens inscrits", value: commune._count.users.toLocaleString("fr-FR") },
+  const { department } = commune;
+  const facts = [
+    { icon: "map" as const, label: "Région", value: department.region.name, href: `/regions/${department.region.slug}` },
+    { icon: "layers" as const, label: "Département", value: department.name, href: `/regions/${department.region.slug}/${department.slug}` },
+    { icon: "users" as const, label: "Population", value: commune.population ? commune.population.toLocaleString("fr-FR") : "Non renseignée" },
+    { icon: "user" as const, label: "Citoyens inscrits", value: commune._count.users.toLocaleString("fr-FR") },
   ];
 
   return (
     <div>
-      <PageHero
-        eyebrow={commune.department.name}
+      <PageHeader
+        eyebrow="Commune"
         title={commune.name}
-        subtitle={`Commune du département de ${commune.department.name}, région de ${commune.department.region.name}.`}
-        backgroundImage={`/regions/${commune.department.region.slug.toUpperCase()}.jpeg`}
-        breadcrumb={
-          <>
-            <Link href="/">Régions</Link>
-            <span>/</span>
-            <Link href={`/regions/${commune.department.region.slug}`}>
-              {commune.department.region.name}
-            </Link>
-            <span>/</span>
-            <Link href={`/regions/${commune.department.region.slug}/${commune.department.slug}`}>
-              {commune.department.name}
-            </Link>
-            <span>/</span>
-            <span className="text-white">{commune.name}</span>
-          </>
-        }
+        subtitle={`Commune du département de ${department.name}, région de ${department.region.name}.`}
+        image={`/regions/${department.region.slug.toUpperCase()}.jpeg`}
+        breadcrumb={[
+          { label: "Régions", href: "/" },
+          { label: department.region.name, href: `/regions/${department.region.slug}` },
+          { label: department.name, href: `/regions/${department.region.slug}/${department.slug}` },
+          { label: commune.name },
+        ]}
         actions={
           <>
-            <Link
-              href={`/idees/nouvelle?communeId=${commune.id}`}
-              className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-brand-800 shadow-lg shadow-brand-950/30 transition hover:-translate-y-0.5 hover:shadow-xl"
-            >
+            <Link href={`/idees/nouvelle?communeId=${commune.id}`} className="btn btn-accent btn-lg">
+              <Icon name="lightbulb" className="size-4" />
               Proposer une idée
             </Link>
             <Link
               href={`/participation/nouvelle?communeId=${commune.id}&type=MAYOR_CANDIDACY`}
-              className="rounded-full border border-white/30 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
+              className="btn btn-secondary btn-lg"
             >
-              Je veux devenir membre de l&apos;équipe municipale
+              <Icon name="landmark" className="size-4 text-brand-700" />
+              Rejoindre l&apos;équipe municipale
             </Link>
           </>
         }
       />
 
-      <div className="mx-auto max-w-5xl px-4 pt-6">
-        <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {stats.map((s) => (
-            <div
-              key={s.label}
-              className="rounded-2xl bg-white p-4 text-center shadow-md ring-1 ring-slate-900/5"
-            >
-              <dd className="text-xl font-bold text-brand-700 sm:text-2xl">{s.value}</dd>
-              <dt className="mt-1 text-xs font-medium tracking-wide text-slate-500 uppercase">
-                {s.label}
-              </dt>
-            </div>
-          ))}
-        </dl>
-      </div>
+      <div className="container-page grid grid-cols-1 gap-8 py-12 sm:py-16 lg:grid-cols-3">
+        <div className="space-y-6 lg:col-span-2">
+          <section className="card p-6 sm:p-8">
+            <h2 className="text-xl font-semibold">Présentation</h2>
+            <p className="mt-3 leading-relaxed text-stone-600">
+              {commune.description ?? "Aucune présentation n'est encore disponible pour cette commune."}
+            </p>
+          </section>
 
-      <section className="mx-auto max-w-5xl px-4 py-12">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="space-y-6 lg:col-span-2">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="mb-2 text-lg font-bold text-slate-900">Présentation</h2>
-              <p className="text-sm leading-relaxed text-slate-600">
-                {commune.description ?? "Aucune présentation disponible pour le moment."}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-lg font-bold text-slate-900">Projets en cours</h2>
-              {commune.projects.length === 0 ? (
-                <p className="text-sm text-slate-500">Aucun projet référencé pour le moment.</p>
-              ) : (
-                <ul className="space-y-4">
-                  {commune.projects.map((project) => (
-                    <li key={project.id} className="relative border-l-2 border-brand-200 pl-4">
-                      <span className="absolute top-1 -left-[5px] h-2.5 w-2.5 rounded-full bg-brand-600" />
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <span className="font-semibold text-slate-900">{project.title}</span>
-                        <Badge color={projectStatusBadge[project.status].color}>
-                          {projectStatusBadge[project.status].label}
-                        </Badge>
-                      </div>
-                      <p className="mt-1 text-sm text-slate-600">{project.description}</p>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-slate-900">Idées récentes</h2>
-                <Link
-                  href={`/idees?communeId=${commune.id}`}
-                  className="text-sm font-semibold text-brand-700 hover:underline"
-                >
-                  Voir tout →
-                </Link>
-              </div>
-              {commune.ideas.length === 0 ? (
-                <p className="text-sm text-slate-500">Aucune idée publiée pour cette commune.</p>
-              ) : (
-                <ul className="space-y-3">
-                  {commune.ideas.map((idea) => (
-                    <li
-                      key={idea.id}
-                      className="rounded-xl border border-slate-100 p-3 transition hover:border-brand-200 hover:bg-brand-50/40"
+          <section className="card p-6 sm:p-8">
+            <h2 className="text-xl font-semibold">Projets de la commune</h2>
+            {commune.projects.length === 0 ? (
+              <p className="mt-3 text-sm text-stone-500">Aucun projet référencé pour le moment.</p>
+            ) : (
+              <ol className="mt-6 space-y-6">
+                {commune.projects.map((project, i) => (
+                  <li key={project.id} className="relative pl-8">
+                    {i < commune.projects.length - 1 && (
+                      <span aria-hidden className="absolute top-6 bottom-[-1.5rem] left-[9px] w-px bg-stone-200" />
+                    )}
+                    <span
+                      aria-hidden
+                      className="absolute top-1 left-0 flex size-[19px] items-center justify-center rounded-full border-2 border-brand-600 bg-white"
                     >
-                      <Link
-                        href={`/idees/${idea.id}`}
-                        className="font-semibold text-slate-900 hover:text-brand-700"
-                      >
-                        {idea.title}
-                      </Link>
-                      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                        <Badge color="slate">{categoryLabels[idea.category]}</Badge>
-                        <span>👍 {idea._count.votes}</span>
-                        <span>💬 {idea._count.comments}</span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                      <span className="size-1.5 rounded-full bg-brand-600" />
+                    </span>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <h3 className="font-sans text-base font-semibold text-ink">{project.title}</h3>
+                      <Badge tone={projectStatus[project.status].tone} dot>
+                        {projectStatus[project.status].label}
+                      </Badge>
+                    </div>
+                    <p className="mt-1.5 text-sm leading-relaxed text-stone-600">{project.description}</p>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </section>
+
+          <section>
+            <div className="mb-4 flex items-center justify-between gap-4">
+              <h2 className="text-xl font-semibold">Idées récentes</h2>
+              {commune.ideas.length > 0 && (
+                <Link href={`/idees?communeId=${commune.id}`} className="btn btn-ghost btn-sm">
+                  Voir toutes les idées
+                  <Icon name="arrow-right" className="size-4" />
+                </Link>
               )}
             </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <div className="bg-gradient-to-br from-brand-700 to-brand-600 px-5 py-3">
-                <h2 className="text-sm font-semibold text-white">Localisation</h2>
-              </div>
-              <div className="p-2">
-                <CommuneMap lat={commune.centroidLat} lng={commune.centroidLng} name={commune.name} />
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-6">
-              <h2 className="mb-2 text-sm font-bold tracking-wide text-brand-800 uppercase">
-                Participer
-              </h2>
-              <p className="text-sm text-brand-900/80">
-                Vous avez une idée, un signalement ou souhaitez vous impliquer dans la vie de{" "}
-                {commune.name} ?
-              </p>
-              <div className="mt-4 flex flex-col gap-2">
-                <Link
-                  href={`/idees/nouvelle?communeId=${commune.id}`}
-                  className="rounded-full bg-brand-700 px-4 py-2 text-center text-sm font-semibold text-white transition hover:bg-brand-600"
-                >
-                  Proposer une idée
-                </Link>
-                <Link
-                  href={`/participation/nouvelle?communeId=${commune.id}&type=INITIATIVE`}
-                  className="rounded-full border border-brand-700 px-4 py-2 text-center text-sm font-semibold text-brand-700 transition hover:bg-brand-100"
-                >
-                  Participer à une initiative
-                </Link>
-              </div>
-            </div>
-          </div>
+            {commune.ideas.length === 0 ? (
+              <EmptyState
+                icon="lightbulb"
+                title="Aucune idée publiée"
+                action={
+                  <Link href={`/idees/nouvelle?communeId=${commune.id}`} className="btn btn-primary btn-sm">
+                    Proposer la première idée
+                  </Link>
+                }
+              >
+                Soyez le premier à proposer une idée pour {commune.name}.
+              </EmptyState>
+            ) : (
+              <ul className="card divide-y divide-stone-100 overflow-hidden">
+                {commune.ideas.map((idea) => (
+                  <li key={idea.id}>
+                    <Link
+                      href={`/idees/${idea.id}`}
+                      className="group flex items-center gap-4 px-5 py-4 transition hover:bg-stone-50 sm:px-6"
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-medium text-ink group-hover:text-brand-700">
+                          {idea.title}
+                        </span>
+                        <span className="mt-1.5 flex flex-wrap items-center gap-3 text-xs text-stone-500">
+                          <Badge tone="neutral">{ideaCategories[idea.category].label}</Badge>
+                          <span className="flex items-center gap-1">
+                            <Icon name="thumbs-up" className="size-3.5" />
+                            {idea._count.votes}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Icon name="message" className="size-3.5" />
+                            {idea._count.comments}
+                          </span>
+                        </span>
+                      </span>
+                      <Icon name="chevron-right" className="size-4 shrink-0 text-stone-400 group-hover:text-brand-700" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </div>
-      </section>
+
+        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <section className="card p-6">
+            <h2 className="text-base font-semibold">En bref</h2>
+            <dl className="mt-4 divide-y divide-stone-100">
+              {facts.map((fact) => (
+                <div key={fact.label} className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+                  <dt className="flex items-center gap-2 text-sm text-stone-500">
+                    <Icon name={fact.icon} className="size-4 text-stone-400" />
+                    {fact.label}
+                  </dt>
+                  <dd className="text-right text-sm font-semibold text-ink">
+                    {fact.href ? (
+                      <Link href={fact.href} className="hover:text-brand-700">
+                        {fact.value}
+                      </Link>
+                    ) : (
+                      fact.value
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+
+          <section className="card overflow-hidden">
+            <div className="flex items-center gap-2 px-5 pt-5 pb-3">
+              <Icon name="map-pin" className="size-4 text-brand-700" />
+              <h2 className="text-base font-semibold">Localisation</h2>
+            </div>
+            <div className="isolate px-2 pb-2">
+              <CommuneMap lat={commune.centroidLat} lng={commune.centroidLng} name={commune.name} />
+            </div>
+          </section>
+
+          <section className="rounded-2xl border border-brand-700/15 bg-brand-50 p-6">
+            <h2 className="text-base font-semibold text-brand-950">Participer à la vie de {commune.name}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-brand-900/80">
+              Une idée, un signalement, l&apos;envie de vous impliquer ? Votre voix compte.
+            </p>
+            <div className="mt-5 flex flex-col gap-2">
+              <Link href={`/idees/nouvelle?communeId=${commune.id}`} className="btn btn-primary w-full">
+                Proposer une idée
+              </Link>
+              <Link
+                href={`/participation/nouvelle?communeId=${commune.id}&type=INITIATIVE`}
+                className="btn btn-secondary w-full"
+              >
+                Participer à une initiative
+              </Link>
+            </div>
+          </section>
+        </aside>
+      </div>
     </div>
   );
 }

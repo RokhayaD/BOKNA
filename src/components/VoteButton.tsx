@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { voteIdea } from "@/actions/ideas";
+import { Icon } from "@/components/ui/Icon";
 
 export function VoteButton({
   ideaId,
@@ -16,15 +17,21 @@ export function VoteButton({
 
   return (
     <button
+      type="button"
       onClick={() => startTransition(() => voteIdea(ideaId))}
       disabled={pending}
-      className={`rounded-full px-5 py-2 text-sm font-semibold shadow-sm transition disabled:opacity-60 ${
-        hasVoted
-          ? "bg-brand-700 text-white hover:bg-brand-600"
-          : "border border-brand-700 text-brand-700 hover:bg-brand-50"
-      }`}
+      aria-pressed={hasVoted}
+      className={`btn ${hasVoted ? "btn-primary" : "btn-secondary"} pr-1.5`}
     >
-      {hasVoted ? "✓ Soutenu" : "Soutenir"} ({voteCount})
+      <Icon name={hasVoted ? "check" : "thumbs-up"} className="size-4" />
+      {hasVoted ? "Vous soutenez" : "Soutenir"}
+      <span
+        className={`ml-1 rounded-md px-2 py-0.5 text-xs font-semibold tabular-nums ${
+          hasVoted ? "bg-white/20 text-white" : "bg-stone-100 text-stone-700"
+        }`}
+      >
+        {voteCount}
+      </span>
     </button>
   );
 }

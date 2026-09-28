@@ -1,21 +1,18 @@
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { Nav } from "@/components/Nav";
+import { Logo } from "@/components/ui/Logo";
 
 export async function Header() {
   const session = await auth();
   const user = session?.user ? { name: session.user.name ?? "Mon compte", role: session.user.role } : null;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-brand-900/10 bg-brand-800/95 text-white shadow-sm backdrop-blur">
-      <div className="relative mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-          <span className="rounded-lg bg-white px-2 py-1 text-brand-800 shadow-sm">Bokna</span>
-          <span className="hidden text-sm font-normal text-brand-100 lg:inline">
-            la plateforme citoyenne du Sénégal
-          </span>
+    <header className="sticky top-0 z-50 border-b border-stone-200/70 bg-paper/85 backdrop-blur-md">
+      <div className="container-page relative flex h-16 items-center gap-6">
+        <Link href="/" aria-label="Bokna — accueil" className="shrink-0 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600">
+          <Logo />
         </Link>
-
         <Nav user={user} />
       </div>
     </header>

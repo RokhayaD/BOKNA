@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ------------------------------------------------------------------
+   Bokna — design system
+   Vert #338345 (brand-700) : couleur principale, confiance, action.
+   Orange #dd431f (accent-600) : accent réservé aux actions clés.
+   Neutres chauds (stone) sur fond « papier » pour un rendu éditorial.
+   ------------------------------------------------------------------ */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-bricolage), var(--font-geist-sans), ui-sans-serif, sans-serif;
+}
 
-  /* Couleurs de la charte Bokna : vert #338345 (brand-700), orange #dd431f (accent-600) */
+@theme {
   --color-brand-50: #f5f9f6;
   --color-brand-100: #e7f0e9;
   --color-brand-200: #cce0d1;
@@ -35,10 +37,129 @@
   --color-accent-800: #9b2f16;
   --color-accent-900: #732310;
   --color-accent-950: #421409;
+
+  --color-paper: #f8f7f3;
+  --color-ink: #17231b;
+
+  --shadow-card: 0 1px 2px 0 rgb(23 35 27 / 0.04), 0 1px 3px 0 rgb(23 35 27 / 0.05);
+  --shadow-lift: 0 2px 4px -2px rgb(23 35 27 / 0.06), 0 14px 32px -14px rgb(23 35 27 / 0.2);
+  --shadow-pop: 0 18px 48px -14px rgb(23 35 27 / 0.3), 0 2px 6px -2px rgb(23 35 27 / 0.08);
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-brand-200 text-brand-950;
+  }
+}
+
+@layer components {
+  /* Mise en page */
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2.5 text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase;
+  }
+  .eyebrow::before {
+    content: "";
+    @apply h-px w-6 bg-accent-600;
+  }
+
+  /* Boutons */
+  .btn {
+    @apply inline-flex h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-semibold whitespace-nowrap transition duration-200 ease-soft select-none;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600;
+    @apply active:translate-y-px disabled:pointer-events-none disabled:opacity-50;
+  }
+  .btn svg {
+    @apply shrink-0;
+  }
+  .btn-sm {
+    @apply h-8 gap-1.5 px-3 text-[13px];
+  }
+  .btn-lg {
+    @apply h-12 px-6 text-[15px];
+  }
+  .btn-primary {
+    @apply bg-brand-700 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.14),0_1px_2px_rgb(20_52_28/0.35)] hover:bg-brand-800;
+  }
+  .btn-accent {
+    @apply bg-accent-600 text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.16),0_1px_2px_rgb(66_20_9/0.35)] hover:bg-accent-700;
+    @apply focus-visible:outline-accent-600;
+  }
+  .btn-secondary {
+    @apply border border-stone-300 bg-white text-ink shadow-card hover:border-stone-400 hover:bg-stone-50;
+  }
+  .btn-ghost {
+    @apply text-stone-600 hover:bg-stone-900/5 hover:text-ink;
+  }
+  .btn-danger {
+    @apply border border-red-200 bg-white text-red-700 hover:border-red-300 hover:bg-red-50;
+  }
+
+  /* Champs de formulaire */
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+  .hint {
+    @apply mt-1.5 text-xs text-stone-500;
+  }
+  .input {
+    @apply block h-11 w-full rounded-lg border border-stone-300 bg-white px-3.5 text-sm text-ink shadow-[0_1px_2px_rgb(23_35_27/0.04)] transition duration-150;
+    @apply placeholder:text-stone-400 hover:border-stone-400;
+    @apply focus:border-brand-600 focus:ring-4 focus:ring-brand-600/15 focus:outline-none;
+    @apply disabled:cursor-not-allowed disabled:border-stone-200 disabled:bg-stone-100 disabled:text-stone-400;
+  }
+  textarea.input {
+    @apply h-auto py-2.5 leading-relaxed;
+  }
+  select.input {
+    @apply appearance-none pr-10;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2378716c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 1rem;
+  }
+
+  /* Cartes */
+  .card {
+    @apply rounded-2xl border border-stone-200/80 bg-white shadow-card;
+  }
+  .card-interactive {
+    @apply transition duration-300 ease-soft hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-lift;
+  }
+
+  /* Liens de texte */
+  .link {
+    @apply font-semibold text-brand-700 underline decoration-brand-700/30 underline-offset-4 transition hover:decoration-brand-700;
+  }
+
+  /* Tuile d'icône */
+  .icon-tile {
+    @apply flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-700/10 ring-inset;
+  }
 }

@@ -6,6 +6,6 @@ export const CommuneMapLoader = dynamic(
   () => import("./CommuneMap").then((mod) => mod.CommuneMap),
   {
     ssr: false,
-    loading: () => <div className="h-64 w-full animate-pulse rounded-lg bg-slate-100" />,
+    loading: () => <div className="h-64 w-full animate-pulse rounded-xl bg-stone-100" />,
   }
 );

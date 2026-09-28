@@ -31,7 +31,7 @@ export function CommuneMap({
       center={[lat, lng]}
       zoom={11}
       scrollWheelZoom={false}
-      className="h-64 w-full rounded-lg"
+      className="h-64 w-full rounded-xl"
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

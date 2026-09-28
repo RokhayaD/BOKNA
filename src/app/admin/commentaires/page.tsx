@@ -1,13 +1,12 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { moderateComment } from "@/actions/ideas";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { Badge } from "@/components/Badge";
-
-const statusBadge: Record<string, { label: string; color: "amber" | "emerald" | "red" }> = {
-  PENDING: { label: "En attente", color: "amber" },
-  APPROVED: { label: "Approuvé", color: "emerald" },
-  REJECTED: { label: "Rejeté", color: "red" },
-};
+import { ModerationButtons } from "@/components/admin/ModerationButtons";
+import { Badge } from "@/components/ui/Badge";
+import { Avatar } from "@/components/ui/Avatar";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { formatDate, moderationStatus } from "@/lib/labels";
 
 export default async function AdminCommentsPage() {
   const comments = await prisma.comment.findMany({
@@ -19,48 +18,40 @@ export default async function AdminCommentsPage() {
     <div>
       <AdminPageHeader
         title="Modération des commentaires"
-        description={`${comments.length} commentaire(s) au total.`}
+        description={`${comments.length} commentaire${comments.length > 1 ? "s" : ""} au total.`}
       />
-      <ul className="space-y-3">
-        {comments.map((comment) => (
-          <li key={comment.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm text-slate-500">
-                sur <span className="font-medium text-slate-700">{comment.idea.title}</span> · par{" "}
-                {comment.author.name}
-              </p>
-              <Badge color={statusBadge[comment.status].color}>{statusBadge[comment.status].label}</Badge>
-            </div>
-            <p className="mt-2 text-sm text-slate-700">{comment.content}</p>
+      {comments.length === 0 ? (
+        <EmptyState icon="message" title="Aucun commentaire" />
+      ) : (
+        <ul className="space-y-3">
+          {comments.map((comment) => (
+            <li key={comment.id} className="card p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex min-w-0 items-center gap-3">
+                  <Avatar name={comment.author.name} />
+                  <p className="min-w-0 text-sm text-stone-500">
+                    <span className="font-semibold text-ink">{comment.author.name}</span> sur{" "}
+                    <Link href={`/idees/${comment.idea.id}`} className="font-medium text-stone-700 hover:text-brand-700">
+                      {comment.idea.title}
+                    </Link>
+                    <span className="block text-xs">{formatDate(comment.createdAt)}</span>
+                  </p>
+                </div>
+                <Badge tone={moderationStatus[comment.status].tone} dot>
+                  {moderationStatus[comment.status].m}
+                </Badge>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed whitespace-pre-wrap text-stone-700">{comment.content}</p>
 
-            <form action={moderateComment} className="mt-3 flex gap-2 border-t border-slate-100 pt-3">
-              <input type="hidden" name="commentId" value={comment.id} />
-              <input type="hidden" name="ideaId" value={comment.idea.id} />
-              <button
-                type="submit"
-                name="status"
-                value="APPROVED"
-                className="rounded-full bg-brand-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
-              >
-                Approuver
-              </button>
-              <button
-                type="submit"
-                name="status"
-                value="REJECTED"
-                className="rounded-full bg-red-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-red-500"
-              >
-                Rejeter
-              </button>
-            </form>
-          </li>
-        ))}
-        {comments.length === 0 && (
-          <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-            Aucun commentaire.
-          </li>
-        )}
-      </ul>
+              <form action={moderateComment} className="mt-4 border-t border-stone-100 pt-4">
+                <input type="hidden" name="commentId" value={comment.id} />
+                <input type="hidden" name="ideaId" value={comment.idea.id} />
+                <ModerationButtons />
+              </form>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

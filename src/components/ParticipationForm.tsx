@@ -4,9 +4,23 @@ import { useActionState, useState } from "react";
 import { createParticipationRequest } from "@/actions/participation";
 import type { GeoTree } from "@/lib/geo";
 import { CommuneSelector } from "@/components/CommuneSelector";
+import { Alert } from "@/components/ui/Alert";
+import { Icon, type IconName } from "@/components/ui/Icon";
 
-const inputClass =
-  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none";
+const types: { value: "INITIATIVE" | "MAYOR_CANDIDACY"; title: string; text: string; icon: IconName }[] = [
+  {
+    value: "INITIATIVE",
+    title: "Participer à une initiative",
+    text: "Contribuer à un projet citoyen de votre commune.",
+    icon: "sprout",
+  },
+  {
+    value: "MAYOR_CANDIDACY",
+    title: "Rejoindre l'équipe municipale",
+    text: "Porter les couleurs de Bokna au conseil municipal.",
+    icon: "landmark",
+  },
+];
 
 export function ParticipationForm({
   tree,
@@ -21,66 +35,88 @@ export function ParticipationForm({
   const [type, setType] = useState(defaultType === "MAYOR_CANDIDACY" ? "MAYOR_CANDIDACY" : "INITIATIVE");
 
   return (
-    <form action={formAction} className="space-y-5">
-      {state?.error && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 ring-1 ring-red-200">
-          {state.error}
-        </p>
-      )}
+    <form action={formAction} className="space-y-8">
+      {state?.error && <Alert tone="error">{state.error}</Alert>}
 
-      <div className="grid gap-2 sm:grid-cols-2">
-        <button
-          type="button"
-          onClick={() => setType("INITIATIVE")}
-          className={`rounded-xl border p-3 text-left text-sm font-medium transition ${
-            type === "INITIATIVE"
-              ? "border-brand-500 bg-brand-50 text-brand-800 ring-1 ring-brand-500"
-              : "border-slate-200 text-slate-600 hover:border-slate-300"
-          }`}
-        >
-          🤝 Participer à une initiative
-        </button>
-        <button
-          type="button"
-          onClick={() => setType("MAYOR_CANDIDACY")}
-          className={`rounded-xl border p-3 text-left text-sm font-medium transition ${
-            type === "MAYOR_CANDIDACY"
-              ? "border-brand-500 bg-brand-50 text-brand-800 ring-1 ring-brand-500"
-              : "border-slate-200 text-slate-600 hover:border-slate-300"
-          }`}
-        >
-          🏛️ Équipe municipale
-        </button>
+      <fieldset>
+        <legend className="label">Type de demande</legend>
+        <div role="radiogroup" className="grid gap-3 sm:grid-cols-2">
+          {types.map((t) => {
+            const selected = type === t.value;
+            return (
+              <button
+                key={t.value}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => setType(t.value)}
+                className={`flex gap-3 rounded-xl border p-4 text-left transition focus-visible:ring-4 focus-visible:ring-brand-600/15 focus-visible:outline-none ${
+                  selected
+                    ? "border-brand-700 bg-brand-50/60 ring-1 ring-brand-700"
+                    : "border-stone-300 bg-white hover:border-stone-400"
+                }`}
+              >
+                <span
+                  className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition ${
+                    selected ? "bg-brand-700 text-white" : "bg-stone-100 text-stone-500"
+                  }`}
+                >
+                  <Icon name={t.icon} className="size-[18px]" />
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-ink">{t.title}</span>
+                  <span className="mt-0.5 block text-xs text-stone-500">{t.text}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
         <input type="hidden" name="type" value={type} />
-      </div>
+      </fieldset>
 
-      <div>
-        <p className="mb-1 text-sm font-medium text-slate-700">Commune concernée</p>
+      <fieldset>
+        <legend className="label">Commune concernée</legend>
         <CommuneSelector tree={tree} defaultCommuneId={defaultCommuneId} />
-      </div>
+      </fieldset>
 
       {type === "MAYOR_CANDIDACY" && (
-        <div className="grid gap-4 sm:grid-cols-3">
+        <fieldset className="grid gap-4 sm:grid-cols-3">
+          <legend className="sr-only">Vos coordonnées</legend>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Nom</label>
-            <input type="text" name="lastName" required className={inputClass} />
+            <label htmlFor="p-lastname" className="label">
+              Nom
+            </label>
+            <input id="p-lastname" type="text" name="lastName" required autoComplete="family-name" className="input" />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Prénom</label>
-            <input type="text" name="firstName" required className={inputClass} />
+            <label htmlFor="p-firstname" className="label">
+              Prénom
+            </label>
+            <input id="p-firstname" type="text" name="firstName" required autoComplete="given-name" className="input" />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Numéro de téléphone</label>
-            <input type="tel" name="phone" required className={inputClass} />
+            <label htmlFor="p-phone" className="label">
+              Téléphone
+            </label>
+            <input
+              id="p-phone"
+              type="tel"
+              name="phone"
+              required
+              autoComplete="tel"
+              placeholder="77 000 00 00"
+              className="input"
+            />
           </div>
-        </div>
+        </fieldset>
       )}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">
+        <label htmlFor="p-message" className="label">
           {type === "MAYOR_CANDIDACY" ? "Votre motivation" : "Décrivez votre demande"}
         </label>
         <textarea
+          id="p-message"
           name="message"
           required
           minLength={20}
@@ -90,17 +126,18 @@ export function ParticipationForm({
               ? "Présentez votre parcours, votre vision pour la commune et vos motivations à rejoindre l'équipe municipale..."
               : "Décrivez l'initiative à laquelle vous souhaitez participer ou contribuer..."
           }
-          className={inputClass}
+          className="input resize-y"
         />
+        <p className="hint">20 caractères minimum.</p>
       </div>
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full bg-accent-600 px-4 py-3 font-semibold text-white shadow-lg shadow-accent-600/20 transition hover:-translate-y-0.5 hover:bg-accent-700 hover:shadow-xl disabled:opacity-60"
-      >
-        {pending ? "Envoi..." : "Envoyer ma demande"}
-      </button>
+      <div className="flex flex-col-reverse gap-3 border-t border-stone-100 pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-xs text-stone-500">Votre demande sera étudiée par l&apos;administration.</p>
+        <button type="submit" disabled={pending} className="btn btn-accent btn-lg">
+          {pending ? "Envoi en cours..." : "Envoyer ma demande"}
+          {!pending && <Icon name="arrow-right" className="size-4" />}
+        </button>
+      </div>
     </form>
   );
 }

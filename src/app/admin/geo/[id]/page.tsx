@@ -19,44 +19,57 @@ export default async function EditCommunePage({
 
   return (
     <div>
-      <Link href="/admin/geo" className="mb-4 inline-block text-sm font-medium text-brand-700 hover:underline">
-        ← Régions / communes
-      </Link>
       <AdminPageHeader
         title={commune.name}
         description={`${commune.department.name} · ${commune.department.region.name}`}
+        back={{ href: "/admin/geo", label: "Territoires" }}
+        action={
+          <Link href={`/communes/${commune.slug}`} className="btn btn-secondary btn-sm">
+            Voir la page publique
+          </Link>
+        }
       />
 
-      <div className="max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <form action={updateCommune} className="space-y-4">
+      <div className="card max-w-2xl p-6 sm:p-8">
+        <form action={updateCommune} className="space-y-6">
           <input type="hidden" name="id" value={commune.id} />
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Population</label>
+            <label htmlFor="commune-population" className="label">
+              Population
+            </label>
             <input
+              id="commune-population"
               type="number"
               name="population"
+              min={0}
               defaultValue={commune.population ?? ""}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              className="input max-w-xs"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Présentation</label>
+            <label htmlFor="commune-description" className="label">
+              Présentation
+            </label>
             <textarea
+              id="commune-description"
               name="description"
               defaultValue={commune.description ?? ""}
-              rows={5}
-              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+              rows={6}
+              className="input resize-y"
             />
+            <p className="hint">Affichée dans la section « Présentation » de la page de la commune.</p>
           </div>
 
-          <button
-            type="submit"
-            className="rounded-full bg-brand-700 px-6 py-2.5 font-semibold text-white shadow-sm transition hover:bg-brand-600"
-          >
-            Enregistrer
-          </button>
+          <div className="flex gap-3 border-t border-stone-100 pt-6">
+            <button type="submit" className="btn btn-primary">
+              Enregistrer
+            </button>
+            <Link href="/admin/geo" className="btn btn-secondary">
+              Annuler
+            </Link>
+          </div>
         </form>
       </div>
     </div>

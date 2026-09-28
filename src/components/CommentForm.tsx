@@ -2,29 +2,33 @@
 
 import { useActionState } from "react";
 import { addComment } from "@/actions/ideas";
+import { Alert } from "@/components/ui/Alert";
 
 export function CommentForm({ ideaId }: { ideaId: string }) {
   const [state, formAction, pending] = useActionState(addComment, {});
 
   return (
-    <form action={formAction} className="mt-4 space-y-2">
+    <form action={formAction} className="space-y-3">
       <input type="hidden" name="ideaId" value={ideaId} />
-      {state?.error && <p className="text-sm text-red-700">{state.error}</p>}
+      {state?.error && <Alert tone="error">{state.error}</Alert>}
+      <label htmlFor="comment-content" className="sr-only">
+        Votre commentaire
+      </label>
       <textarea
+        id="comment-content"
         name="content"
         required
         minLength={2}
-        rows={2}
-        placeholder="Ajouter un commentaire..."
-        className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+        rows={3}
+        placeholder="Partagez votre avis sur cette idée..."
+        className="input resize-y"
       />
-      <button
-        type="submit"
-        disabled={pending}
-        className="rounded-full bg-slate-800 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
-      >
-        {pending ? "Envoi..." : "Commenter"}
-      </button>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs text-stone-500">Restez courtois et constructif.</p>
+        <button type="submit" disabled={pending} className="btn btn-primary btn-sm">
+          {pending ? "Envoi..." : "Publier"}
+        </button>
+      </div>
     </form>
   );
 }

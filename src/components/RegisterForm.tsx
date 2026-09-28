@@ -4,46 +4,60 @@ import { useActionState } from "react";
 import { registerUser } from "@/actions/auth";
 import type { GeoTree } from "@/lib/geo";
 import { CommuneSelector } from "@/components/CommuneSelector";
-
-const inputClass =
-  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none";
+import { Alert } from "@/components/ui/Alert";
 
 export function RegisterForm({ tree }: { tree: GeoTree }) {
   const [state, formAction, pending] = useActionState(registerUser, {});
 
   return (
-    <form action={formAction} className="space-y-4">
-      {state?.error && (
-        <p className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700 ring-1 ring-red-200">
-          {state.error}
-        </p>
-      )}
+    <form action={formAction} className="space-y-5">
+      {state?.error && <Alert tone="error">{state.error}</Alert>}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">Nom complet</label>
-        <input name="name" required className={inputClass} />
+        <label htmlFor="reg-name" className="label">
+          Nom complet
+        </label>
+        <input id="reg-name" name="name" required autoComplete="name" className="input" />
       </div>
 
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">Email</label>
-        <input type="email" name="email" required className={inputClass} />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label htmlFor="reg-email" className="label">
+            Email
+          </label>
+          <input
+            id="reg-email"
+            type="email"
+            name="email"
+            required
+            autoComplete="email"
+            placeholder="vous@exemple.sn"
+            className="input"
+          />
+        </div>
+        <div>
+          <label htmlFor="reg-password" className="label">
+            Mot de passe
+          </label>
+          <input
+            id="reg-password"
+            type="password"
+            name="password"
+            required
+            minLength={6}
+            autoComplete="new-password"
+            className="input"
+          />
+          <p className="hint">6 caractères minimum.</p>
+        </div>
       </div>
 
-      <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">Mot de passe</label>
-        <input type="password" name="password" required minLength={6} className={inputClass} />
-      </div>
-
-      <div>
-        <p className="mb-1 text-sm font-medium text-slate-700">Votre commune</p>
+      <fieldset>
+        <legend className="label">Votre commune</legend>
         <CommuneSelector tree={tree} />
-      </div>
+      </fieldset>
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="w-full rounded-full bg-accent-600 px-4 py-3 font-semibold text-white shadow-lg shadow-accent-600/20 transition hover:-translate-y-0.5 hover:bg-accent-700 hover:shadow-xl disabled:opacity-60"
-      >
+      <button type="submit" disabled={pending} className="btn btn-primary btn-lg w-full">
         {pending ? "Création en cours..." : "Créer mon compte"}
       </button>
     </form>

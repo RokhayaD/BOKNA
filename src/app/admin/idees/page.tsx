@@ -1,13 +1,12 @@
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { moderateIdea } from "@/actions/ideas";
 import { AdminPageHeader } from "@/components/AdminPageHeader";
-import { Badge } from "@/components/Badge";
-
-const statusBadge: Record<string, { label: string; color: "amber" | "emerald" | "red" }> = {
-  PENDING: { label: "En attente", color: "amber" },
-  APPROVED: { label: "Approuvée", color: "emerald" },
-  REJECTED: { label: "Rejetée", color: "red" },
-};
+import { ModerationButtons } from "@/components/admin/ModerationButtons";
+import { Badge } from "@/components/ui/Badge";
+import { Icon } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { formatDate, ideaCategories, moderationStatus } from "@/lib/labels";
 
 export default async function AdminIdeasPage() {
   const ideas = await prisma.idea.findMany({
@@ -21,56 +20,60 @@ export default async function AdminIdeasPage() {
     <div>
       <AdminPageHeader
         title="Modération des idées"
-        description={`${pendingCount} idée(s) en attente de modération sur ${ideas.length} au total.`}
+        description={`${pendingCount} en attente de modération, sur ${ideas.length} au total.`}
       />
-      <ul className="space-y-4">
-        {ideas.map((idea) => (
-          <li key={idea.id} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="font-bold text-slate-900">{idea.title}</h2>
-              <Badge color={statusBadge[idea.status].color}>{statusBadge[idea.status].label}</Badge>
-            </div>
-            <p className="mt-1 text-sm text-slate-500">
-              {idea.commune.name} · par {idea.author.name}
-            </p>
-            <p className="mt-2 text-sm text-slate-700">{idea.description}</p>
-
-            <form action={moderateIdea} className="mt-4 space-y-2 border-t border-slate-100 pt-4">
-              <input type="hidden" name="ideaId" value={idea.id} />
-              <textarea
-                name="adminReply"
-                defaultValue={idea.adminReply ?? ""}
-                rows={2}
-                placeholder="Réponse de l'administration (optionnel)"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
-              />
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  name="status"
-                  value="APPROVED"
-                  className="rounded-full bg-brand-700 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-brand-600"
-                >
-                  Approuver
-                </button>
-                <button
-                  type="submit"
-                  name="status"
-                  value="REJECTED"
-                  className="rounded-full bg-red-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-red-500"
-                >
-                  Rejeter
-                </button>
+      {ideas.length === 0 ? (
+        <EmptyState icon="lightbulb" title="Aucune idée soumise" />
+      ) : (
+        <ul className="space-y-4">
+          {ideas.map((idea) => (
+            <li key={idea.id} className="card p-5 sm:p-6">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <Link href={`/idees/${idea.id}`} className="font-display text-lg font-semibold text-ink hover:text-brand-700">
+                    {idea.title}
+                  </Link>
+                  <p className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs text-stone-500">
+                    <span className="flex items-center gap-1.5">
+                      <Icon name={ideaCategories[idea.category].icon} className="size-3.5" />
+                      {ideaCategories[idea.category].label}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Icon name="map-pin" className="size-3.5" />
+                      {idea.commune.name}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Icon name="user" className="size-3.5" />
+                      {idea.author.name}
+                    </span>
+                    <span>{formatDate(idea.createdAt)}</span>
+                  </p>
+                </div>
+                <Badge tone={moderationStatus[idea.status].tone} dot>
+                  {moderationStatus[idea.status].f}
+                </Badge>
               </div>
-            </form>
-          </li>
-        ))}
-        {ideas.length === 0 && (
-          <li className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">
-            Aucune idée soumise.
-          </li>
-        )}
-      </ul>
+              <p className="mt-4 text-sm leading-relaxed whitespace-pre-wrap text-stone-700">{idea.description}</p>
+
+              <form action={moderateIdea} className="mt-5 space-y-3 border-t border-stone-100 pt-5">
+                <input type="hidden" name="ideaId" value={idea.id} />
+                <label htmlFor={`reply-${idea.id}`} className="label">
+                  Réponse de l&apos;administration <span className="font-normal text-stone-400">(optionnel)</span>
+                </label>
+                <textarea
+                  id={`reply-${idea.id}`}
+                  name="adminReply"
+                  defaultValue={idea.adminReply ?? ""}
+                  rows={2}
+                  placeholder="Cette réponse sera visible publiquement sous l'idée."
+                  className="input resize-y"
+                />
+                <ModerationButtons />
+              </form>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

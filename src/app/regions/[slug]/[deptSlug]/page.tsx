@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { PageHero } from "@/components/PageHero";
+import { PageHeader } from "@/components/PageHeader";
+import { Icon } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { plural } from "@/lib/labels";
 
 export default async function DepartmentPage({
   params,
@@ -22,57 +25,56 @@ export default async function DepartmentPage({
 
   return (
     <div>
-      <PageHero
-        eyebrow={department.region.name}
-        title={department.name}
+      <PageHeader
+        eyebrow={`Région de ${department.region.name}`}
+        title={`Département de ${department.name}`}
         subtitle="Sélectionnez une commune pour consulter sa présentation, ses projets et participer à sa vie municipale."
-        backgroundImage={`/regions/${department.region.slug.toUpperCase()}.jpeg`}
-        breadcrumb={
-          <>
-            <Link href="/">Régions</Link>
-            <span>/</span>
-            <Link href={`/regions/${department.region.slug}`}>{department.region.name}</Link>
-            <span>/</span>
-            <span className="text-white">{department.name}</span>
-          </>
-        }
+        image={`/regions/${department.region.slug.toUpperCase()}.jpeg`}
+        breadcrumb={[
+          { label: "Régions", href: "/" },
+          { label: department.region.name, href: `/regions/${department.region.slug}` },
+          { label: department.name },
+        ]}
+        meta={[{ icon: "building", label: plural(department.communes.length, "commune") }]}
       />
 
-      <section className="mx-auto max-w-5xl px-4 py-12">
-        {department.communes.length === 0 ? (
-          <p className="text-sm text-slate-500">Aucune commune référencée pour le moment.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {department.communes.map((commune) => (
-              <Link
-                key={commune.id}
-                href={`/communes/${commune.slug}`}
-                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm ring-1 ring-slate-900/5 transition duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl"
-              >
-                <div
-                  aria-hidden
-                  className="absolute -top-10 -right-10 h-28 w-28 rounded-full bg-brand-50 transition group-hover:scale-150 group-hover:bg-brand-100"
-                />
-                <div className="relative">
-                  <h2 className="text-lg font-bold text-slate-900 group-hover:text-brand-700">
-                    {commune.name}
-                  </h2>
-                  {commune.population && (
-                    <p className="mt-1 text-sm text-slate-500">
-                      {commune.population.toLocaleString("fr-FR")} habitants
-                    </p>
-                  )}
-                  <span className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand-700 opacity-0 transition group-hover:opacity-100">
-                    Découvrir
-                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                      →
+      <section className="container-page py-12 sm:py-16">
+        <h2 className="text-xl font-semibold">Communes</h2>
+        <div className="mt-6">
+          {department.communes.length === 0 ? (
+            <EmptyState icon="building" title="Aucune commune référencée">
+              Les communes de ce département seront bientôt disponibles.
+            </EmptyState>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {department.communes.map((commune) => (
+                <Link
+                  key={commune.id}
+                  href={`/communes/${commune.slug}`}
+                  className="card card-interactive group flex items-center gap-4 p-5"
+                >
+                  <span className="icon-tile">
+                    <Icon name="building" className="size-5" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-display text-base font-semibold text-ink">
+                      {commune.name}
+                    </span>
+                    <span className="block text-sm text-stone-500">
+                      {commune.population
+                        ? `${commune.population.toLocaleString("fr-FR")} habitants`
+                        : "Population non renseignée"}
                     </span>
                   </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+                  <Icon
+                    name="arrow-right"
+                    className="size-4 text-stone-400 transition group-hover:translate-x-0.5 group-hover:text-brand-700"
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

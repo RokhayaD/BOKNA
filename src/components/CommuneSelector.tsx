@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import type { GeoTree } from "@/lib/geo";
 
 function findDefaults(tree: GeoTree, defaultCommuneId?: string) {
@@ -24,6 +24,7 @@ export function CommuneSelector({
   name?: string;
   defaultCommuneId?: string;
 }) {
+  const id = useId();
   const [regionId, setRegionId] = useState(() => findDefaults(tree, defaultCommuneId).regionId);
   const [departmentId, setDepartmentId] = useState(
     () => findDefaults(tree, defaultCommuneId).departmentId
@@ -38,9 +39,12 @@ export function CommuneSelector({
   return (
     <div className="grid gap-3 sm:grid-cols-3">
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">Région</label>
+        <label htmlFor={`${id}-region`} className="label text-[13px] font-normal text-stone-600">
+          Région
+        </label>
         <select
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none"
+          id={`${id}-region`}
+          className="input"
           value={regionId}
           onChange={(e) => {
             setRegionId(e.target.value);
@@ -48,7 +52,7 @@ export function CommuneSelector({
             setCommuneId("");
           }}
         >
-          <option value="">Sélectionner...</option>
+          <option value="">Sélectionner…</option>
           {tree.map((r) => (
             <option key={r.id} value={r.id}>
               {r.name}
@@ -58,9 +62,12 @@ export function CommuneSelector({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">Département</label>
+        <label htmlFor={`${id}-dept`} className="label text-[13px] font-normal text-stone-600">
+          Département
+        </label>
         <select
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none disabled:bg-slate-100"
+          id={`${id}-dept`}
+          className="input"
           value={departmentId}
           disabled={!regionId}
           onChange={(e) => {
@@ -68,7 +75,7 @@ export function CommuneSelector({
             setCommuneId("");
           }}
         >
-          <option value="">Sélectionner...</option>
+          <option value="">Sélectionner…</option>
           {departments.map((d) => (
             <option key={d.id} value={d.id}>
               {d.name}
@@ -78,16 +85,19 @@ export function CommuneSelector({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-slate-700">Commune</label>
+        <label htmlFor={`${id}-commune`} className="label text-[13px] font-normal text-stone-600">
+          Commune
+        </label>
         <select
+          id={`${id}-commune`}
           name={name}
           required
-          className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 focus:outline-none disabled:bg-slate-100"
+          className="input"
           value={communeId}
           disabled={!departmentId}
           onChange={(e) => setCommuneId(e.target.value)}
         >
-          <option value="">Sélectionner...</option>
+          <option value="">Sélectionner…</option>
           {communes.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Icon } from "@/components/ui/Icon";
 
 export function ShareButton({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
@@ -21,11 +22,9 @@ export function ShareButton({ title }: { title: string }) {
   }
 
   return (
-    <button
-      onClick={handleShare}
-      className="rounded-full border border-slate-300 px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-    >
-      {copied ? "Lien copié !" : "Partager"}
+    <button type="button" onClick={handleShare} className="btn btn-ghost">
+      <Icon name={copied ? "check" : "share"} className={`size-4 ${copied ? "text-brand-700" : ""}`} />
+      <span aria-live="polite">{copied ? "Lien copié" : "Partager"}</span>
     </button>
   );
 }

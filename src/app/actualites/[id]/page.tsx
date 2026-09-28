@@ -1,20 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { PageHero } from "@/components/PageHero";
-import { Badge } from "@/components/Badge";
-
-const typeLabels: Record<string, string> = {
-  NEWS: "Actualité",
-  EVENT: "Événement",
-  MEETING: "Réunion publique",
-};
-
-const typeColors: Record<string, "emerald" | "amber" | "slate"> = {
-  NEWS: "emerald",
-  EVENT: "amber",
-  MEETING: "slate",
-};
+import { PageHeader, type MetaItem } from "@/components/PageHeader";
+import { Icon } from "@/components/ui/Icon";
+import { formatDate, newsTypes } from "@/lib/labels";
 
 export default async function NewsDetailPage({
   params,
@@ -29,31 +18,47 @@ export default async function NewsDetailPage({
 
   if (!item) notFound();
 
+  const meta: MetaItem[] = [
+    { icon: "map-pin", label: item.commune?.name ?? item.region?.name ?? "National" },
+    { icon: "clock", label: `Publié le ${formatDate(item.publishedAt)}` },
+    { icon: "user", label: item.author.name },
+  ];
+
   return (
     <div>
-      <PageHero
-        eyebrow={typeLabels[item.type]}
+      <PageHeader
+        eyebrow={newsTypes[item.type].label}
         title={item.title}
-        subtitle={`${item.commune?.name ?? item.region?.name ?? "National"} · publié le ${item.publishedAt.toLocaleDateString("fr-FR")}`}
-        breadcrumb={
-          <>
-            <Link href="/actualites">Lu xew tay</Link>
-            <span>/</span>
-            <span className="text-white">{item.title}</span>
-          </>
-        }
+        breadcrumb={[{ label: "Lu xew tay", href: "/actualites" }, { label: item.title }]}
+        meta={meta}
       />
 
-      <div className="mx-auto max-w-3xl px-4 py-12">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-            <Badge color={typeColors[item.type]}>{typeLabels[item.type]}</Badge>
-            <span>publié par {item.author.name}</span>
-            {item.eventDate && (
-              <span>· Date de l&apos;événement : {item.eventDate.toLocaleDateString("fr-FR")}</span>
-            )}
-          </div>
-          <p className="mt-5 whitespace-pre-wrap leading-relaxed text-slate-700">{item.content}</p>
+      <div className="container-page py-10 sm:py-12">
+        <div className="mx-auto max-w-3xl">
+          {item.eventDate && (
+            <div className="mb-6 flex items-center gap-4 rounded-2xl border border-accent-600/15 bg-accent-50 p-5">
+              <span className="icon-tile bg-white text-accent-700 ring-accent-600/15">
+                <Icon name="calendar" className="size-5" />
+              </span>
+              <div>
+                <p className="text-xs font-semibold tracking-wide text-accent-800 uppercase">
+                  {item.type === "MEETING" ? "Date de la réunion" : "Date de l'événement"}
+                </p>
+                <p className="font-display text-lg font-semibold text-ink">
+                  {formatDate(item.eventDate, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+                </p>
+              </div>
+            </div>
+          )}
+
+          <article className="card p-6 sm:p-10">
+            <p className="text-[15px] leading-[1.8] whitespace-pre-wrap text-stone-700 sm:text-base">{item.content}</p>
+          </article>
+
+          <Link href="/actualites" className="btn btn-ghost mt-6 -ml-3">
+            <Icon name="arrow-left" className="size-4" />
+            Toutes les actualités
+          </Link>
         </div>
       </div>
     </div>
