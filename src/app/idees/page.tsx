@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { publicIdeaWhere } from "@/lib/ideas";
 import type { Prisma } from "@prisma/client";
 import { PageHeader } from "@/components/PageHeader";
 import { Badge } from "@/components/ui/Badge";
@@ -16,7 +17,7 @@ export default async function IdeasPage({
 }) {
   const { communeId, category } = await searchParams;
 
-  const where: Prisma.IdeaWhereInput = { status: "APPROVED" };
+  const where: Prisma.IdeaWhereInput = { ...publicIdeaWhere };
   if (communeId) where.communeId = communeId;
   if (category) where.category = category as Prisma.EnumIdeaCategoryFilter["equals"];
 

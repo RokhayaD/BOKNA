@@ -1,6 +1,6 @@
 import { PrismaClient, IdeaCategory, NewsType, ProjectStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { regions } from "./seed-data/regions";
+import { regions, regionPresentations } from "./seed-data/regions";
 import { departments } from "./seed-data/departments";
 import { communes } from "./seed-data/communes";
 
@@ -16,6 +16,20 @@ async function main() {
       create: { name: r.name, slug: r.slug, centroidLat: r.lat, centroidLng: r.lng },
     });
     regionBySlug.set(r.slug, created.id);
+
+    // La présentation n'est initialisée que si elle est vide, pour ne jamais
+    // écraser ce que l'administration a saisi.
+    const presentation = regionPresentations[r.slug];
+    if (presentation && !created.description) {
+      await prisma.region.update({
+        where: { id: created.id },
+        data: {
+          description: presentation.description,
+          capital: created.capital ?? presentation.capital,
+          highlights: created.highlights.length ? created.highlights : presentation.highlights,
+        },
+      });
+    }
   }
 
   console.log("Seeding départements...");
@@ -41,11 +55,11 @@ async function main() {
     const description = c.description ?? `Commune du département de ${departmentName}.`;
     const created = await prisma.commune.upsert({
       where: { slug: c.slug },
+      // population et description sont éditables depuis l'administration :
+      // on ne les écrase pas à chaque déploiement (le seed tourne au build).
       update: {
         name: c.name,
         departmentId,
-        population: c.population,
-        description,
         centroidLat: c.lat,
         centroidLng: c.lng,
       },

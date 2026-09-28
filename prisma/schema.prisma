@@ -27,9 +27,15 @@ enum ModerationStatus {
 
 enum IdeaCategory {
   AMELIORATION
+  INFRASTRUCTURE
   SIGNALEMENT
   INVESTISSEMENT
   PROJET_COMMUNAUTAIRE
+}
+
+enum IdeaVisibility {
+  PUBLIC
+  PRIVATE
 }
 
 enum ProjectStatus {
@@ -74,6 +80,12 @@ model Region {
   slug        String  @unique
   centroidLat Float
   centroidLng Float
+  // Présentation éditable depuis l'administration
+  description String?
+  capital     String?
+  area        Int? // superficie en km²
+  population  Int?
+  highlights  String[] @default([])
 
   departments Department[]
   news        News[]
@@ -134,10 +146,29 @@ model Idea {
   commune     Commune          @relation(fields: [communeId], references: [id], onDelete: Cascade)
   status      ModerationStatus @default(PENDING)
   adminReply  String?
+  // Coût estimatif en francs CFA (BigInt : les projets d'infrastructure dépassent la plage d'un Int)
+  estimatedCost BigInt?
+  visibility    IdeaVisibility @default(PUBLIC)
   createdAt   DateTime         @default(now())
 
-  votes    IdeaVote[]
-  comments Comment[]
+  votes       IdeaVote[]
+  comments    Comment[]
+  attachments IdeaAttachment[]
+}
+
+// Fichiers joints stockés en base : les images sont compressées côté navigateur
+// avant l'envoi, et le volume total par idée est plafonné (voir lib/attachments.ts).
+model IdeaAttachment {
+  id        String   @id @default(cuid())
+  ideaId    String
+  idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  name      String
+  mimeType  String
+  size      Int
+  data      Bytes
+  createdAt DateTime @default(now())
+
+  @@index([ideaId])
 }
 
 model IdeaVote {

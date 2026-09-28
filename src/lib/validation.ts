@@ -10,8 +10,27 @@ export const registerSchema = z.object({
 export const ideaSchema = z.object({
   title: z.string().min(5, "Le titre doit contenir au moins 5 caractères."),
   description: z.string().min(20, "Merci de détailler votre idée (20 caractères minimum)."),
-  category: z.enum(["AMELIORATION", "SIGNALEMENT", "INVESTISSEMENT", "PROJET_COMMUNAUTAIRE"]),
+  category: z.enum(["AMELIORATION", "INFRASTRUCTURE", "SIGNALEMENT", "INVESTISSEMENT", "PROJET_COMMUNAUTAIRE"], {
+    message: "Veuillez choisir une catégorie.",
+  }),
   communeId: z.string().min(1, "Veuillez choisir une commune."),
+  visibility: z.enum(["PUBLIC", "PRIVATE"], { message: "Veuillez choisir la visibilité de l'idée." }),
+  // Montant en FCFA, saisi avec séparateurs de milliers : on ne garde que les chiffres.
+  estimatedCost: z
+    .string()
+    .optional()
+    .transform((v) => (v ?? "").replace(/\D/g, ""))
+    .refine((v) => v.length <= 15, "Le coût estimatif semble trop élevé.")
+    .transform((v) => (v ? BigInt(v) : null)),
+});
+
+export const regionSchema = z.object({
+  id: z.string().min(1),
+  capital: z.string().trim().max(100).optional(),
+  description: z.string().trim().max(3000).optional(),
+  highlights: z.string().optional(),
+  area: z.string().optional(),
+  population: z.string().optional(),
 });
 
 export const commentSchema = z.object({

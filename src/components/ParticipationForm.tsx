@@ -16,7 +16,7 @@ const types: { value: "INITIATIVE" | "MAYOR_CANDIDACY"; title: string; text: str
   },
   {
     value: "MAYOR_CANDIDACY",
-    title: "Rejoindre l'équipe municipale",
+    title: "Devenir membre de l'équipe municipale",
     text: "Porter les couleurs de Bokna au conseil municipal.",
     icon: "landmark",
   },

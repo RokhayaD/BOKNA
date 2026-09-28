@@ -5,6 +5,11 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ideaSchema, commentSchema } from "@/lib/validation";
+import {
+  ATTACHMENT_ACCEPTED_TYPES,
+  ATTACHMENT_MAX_FILES,
+  ATTACHMENT_MAX_TOTAL_BYTES,
+} from "@/lib/attachments";
 
 export type ActionState = { error?: string };
 
@@ -17,14 +22,43 @@ export async function createIdea(_prevState: ActionState, formData: FormData): P
     description: formData.get("description"),
     category: formData.get("category"),
     communeId: formData.get("communeId"),
+    visibility: formData.get("visibility"),
+    estimatedCost: formData.get("estimatedCost") ?? undefined,
   });
 
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Données invalides." };
   }
 
+  const files = formData
+    .getAll("attachments")
+    .filter((f): f is File => f instanceof File && f.size > 0);
+
+  if (files.length > ATTACHMENT_MAX_FILES) {
+    return { error: `Vous pouvez joindre au maximum ${ATTACHMENT_MAX_FILES} fichiers.` };
+  }
+  if (files.some((f) => !ATTACHMENT_ACCEPTED_TYPES.includes(f.type))) {
+    return { error: "Seules les images (JPEG, PNG, WebP) et les documents PDF sont acceptés." };
+  }
+  if (files.reduce((sum, f) => sum + f.size, 0) > ATTACHMENT_MAX_TOTAL_BYTES) {
+    return { error: "Les fichiers joints dépassent la taille maximale autorisée (4 Mo au total)." };
+  }
+
+  const attachments = await Promise.all(
+    files.map(async (file) => ({
+      name: file.name.slice(0, 200),
+      mimeType: file.type,
+      size: file.size,
+      data: new Uint8Array(await file.arrayBuffer()),
+    }))
+  );
+
   const idea = await prisma.idea.create({
-    data: { ...parsed.data, authorId: session.user.id },
+    data: {
+      ...parsed.data,
+      authorId: session.user.id,
+      attachments: attachments.length ? { create: attachments } : undefined,
+    },
   });
 
   revalidatePath("/idees");
@@ -34,6 +68,10 @@ export async function createIdea(_prevState: ActionState, formData: FormData): P
 export async function voteIdea(ideaId: string) {
   const session = await auth();
   if (!session?.user) redirect("/login");
+
+  // Seules les idées publiées et publiques peuvent être soutenues.
+  const idea = await prisma.idea.findUnique({ where: { id: ideaId }, select: { visibility: true } });
+  if (!idea || idea.visibility !== "PUBLIC") return;
 
   const existing = await prisma.ideaVote.findUnique({
     where: { ideaId_userId: { ideaId, userId: session.user.id } },

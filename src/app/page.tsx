@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { publicIdeaWhere } from "@/lib/ideas";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { Badge } from "@/components/ui/Badge";
 import { Avatar } from "@/components/ui/Avatar";
@@ -36,9 +37,9 @@ export default async function HomePage() {
     }),
     prisma.commune.count(),
     prisma.user.count(),
-    prisma.idea.count({ where: { status: "APPROVED" } }),
+    prisma.idea.count({ where: publicIdeaWhere }),
     prisma.idea.findFirst({
-      where: { status: "APPROVED" },
+      where: publicIdeaWhere,
       orderBy: { createdAt: "desc" },
       include: { commune: true, author: { select: { name: true } }, _count: { select: { votes: true, comments: true } } },
     }),

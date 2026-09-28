@@ -21,17 +21,19 @@ export function CommuneMap({
   lat,
   lng,
   name,
+  className = "h-64",
 }: {
   lat: number;
   lng: number;
   name: string;
+  className?: string;
 }) {
   return (
     <MapContainer
       center={[lat, lng]}
       zoom={11}
       scrollWheelZoom={false}
-      className="h-64 w-full rounded-xl"
+      className={`${className} w-full rounded-xl`}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

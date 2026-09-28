@@ -8,6 +8,12 @@ export const ideaCategories: Record<string, { label: string; long: string; icon:
     icon: "trending-up",
     description: "Rendre un service ou un lieu meilleur",
   },
+  INFRASTRUCTURE: {
+    label: "Infrastructure",
+    long: "Infrastructure",
+    icon: "route",
+    description: "Routes, eau, assainissement, bâtiments publics…",
+  },
   SIGNALEMENT: {
     label: "Signalement",
     long: "Signalement de problème",
@@ -27,6 +33,23 @@ export const ideaCategories: Record<string, { label: string; long: string; icon:
     description: "Une action à mener ensemble",
   },
 };
+
+export const ideaVisibility: Record<string, { label: string; icon: IconName; description: string }> = {
+  PUBLIC: {
+    label: "Publique",
+    icon: "globe",
+    description: "Publiée dans la boîte à idées après validation. Les citoyens peuvent la soutenir et la commenter.",
+  },
+  PRIVATE: {
+    label: "Privée",
+    icon: "lock",
+    description: "Transmise uniquement à l'administration. Elle n'apparaît nulle part publiquement.",
+  },
+};
+
+export function formatFcfa(amount: bigint | number) {
+  return `${amount.toLocaleString("fr-FR")} FCFA`;
+}
 
 // `f` pour les idées et demandes, `m` pour les commentaires.
 export const moderationStatus: Record<string, { f: string; m: string; tone: BadgeTone }> = {
@@ -49,7 +72,7 @@ export const projectStatus: Record<string, { label: string; tone: BadgeTone }> =
 
 export const participationTypes: Record<string, { label: string; icon: IconName }> = {
   INITIATIVE: { label: "Participation à une initiative", icon: "sprout" },
-  MAYOR_CANDIDACY: { label: "Membre de l'équipe municipale", icon: "landmark" },
+  MAYOR_CANDIDACY: { label: "Devenir membre de l'équipe municipale", icon: "landmark" },
 };
 
 export function plural(count: number, singular: string, pluralForm = `${singular}s`) {

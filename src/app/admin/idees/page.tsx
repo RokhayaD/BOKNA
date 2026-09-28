@@ -6,12 +6,17 @@ import { ModerationButtons } from "@/components/admin/ModerationButtons";
 import { Badge } from "@/components/ui/Badge";
 import { Icon } from "@/components/ui/Icon";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { formatDate, ideaCategories, moderationStatus } from "@/lib/labels";
+import { formatDate, formatFcfa, ideaCategories, moderationStatus } from "@/lib/labels";
+import { AttachmentList } from "@/components/AttachmentList";
 
 export default async function AdminIdeasPage() {
   const ideas = await prisma.idea.findMany({
     orderBy: { createdAt: "desc" },
-    include: { commune: true, author: { select: { name: true } } },
+    include: {
+      commune: true,
+      author: { select: { name: true } },
+      attachments: { select: { id: true, name: true, mimeType: true, size: true }, orderBy: { createdAt: "asc" } },
+    },
   });
 
   const pendingCount = ideas.filter((i) => i.status === "PENDING").length;
@@ -49,11 +54,31 @@ export default async function AdminIdeasPage() {
                     <span>{formatDate(idea.createdAt)}</span>
                   </p>
                 </div>
-                <Badge tone={moderationStatus[idea.status].tone} dot>
-                  {moderationStatus[idea.status].f}
-                </Badge>
+                <div className="flex flex-wrap gap-2">
+                  {idea.visibility === "PRIVATE" && (
+                    <Badge tone="neutral">
+                      <Icon name="lock" className="size-3" />
+                      Privée
+                    </Badge>
+                  )}
+                  <Badge tone={moderationStatus[idea.status].tone} dot>
+                    {moderationStatus[idea.status].f}
+                  </Badge>
+                </div>
               </div>
               <p className="mt-4 text-sm leading-relaxed whitespace-pre-wrap text-stone-700">{idea.description}</p>
+              {idea.estimatedCost !== null && (
+                <p className="mt-3 inline-flex items-center gap-1.5 rounded-lg bg-paper px-2.5 py-1 text-sm ring-1 ring-stone-200/70">
+                  <Icon name="banknote" className="size-4 text-stone-400" />
+                  <span className="text-stone-500">Coût estimatif :</span>
+                  <span className="font-semibold text-ink tabular-nums">{formatFcfa(idea.estimatedCost)}</span>
+                </p>
+              )}
+              {idea.attachments.length > 0 && (
+                <div className="mt-4">
+                  <AttachmentList attachments={idea.attachments} compact />
+                </div>
+              )}
 
               <form action={moderateIdea} className="mt-5 space-y-3 border-t border-stone-100 pt-5">
                 <input type="hidden" name="ideaId" value={idea.id} />

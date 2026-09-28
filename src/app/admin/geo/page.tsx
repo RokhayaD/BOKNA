@@ -25,6 +25,15 @@ export default async function AdminGeoPage() {
                 <Icon name="chevron-down" className="size-4 transition group-open:rotate-180" />
               </span>
             </summary>
+            <div className="flex flex-col gap-3 border-t border-stone-100 bg-paper/60 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="line-clamp-2 max-w-xl text-sm text-stone-600">
+                {region.description ?? "Aucune présentation pour cette région."}
+              </p>
+              <Link href={`/admin/geo/regions/${region.id}`} className="btn btn-secondary btn-sm shrink-0">
+                <Icon name="pencil" className="size-3.5" />
+                Modifier la présentation
+              </Link>
+            </div>
             <div className="grid gap-6 border-t border-stone-100 p-5 sm:grid-cols-2">
               {region.departments.map((dept) => (
                 <div key={dept.id}>

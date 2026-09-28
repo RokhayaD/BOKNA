@@ -112,7 +112,13 @@ export default async function ProfilePage() {
                           <span className="block truncate font-medium text-ink group-hover:text-brand-700">
                             {idea.title}
                           </span>
-                          <span className="mt-0.5 block text-xs text-stone-500">
+                          <span className="mt-0.5 flex items-center gap-1.5 text-xs text-stone-500">
+                            {idea.visibility === "PRIVATE" && (
+                              <span className="flex items-center gap-1 font-medium text-stone-600">
+                                <Icon name="lock" className="size-3" />
+                                Privée ·
+                              </span>
+                            )}
                             {idea.commune.name} · {formatDate(idea.createdAt)}
                           </span>
                         </span>

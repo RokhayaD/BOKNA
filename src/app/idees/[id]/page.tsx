@@ -9,7 +9,9 @@ import { PageHeader } from "@/components/PageHeader";
 import { Alert } from "@/components/ui/Alert";
 import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/ui/Icon";
-import { formatDate, ideaCategories } from "@/lib/labels";
+import { formatDate, formatFcfa, ideaCategories, ideaVisibility } from "@/lib/labels";
+import { canViewIdea } from "@/lib/ideas";
+import { AttachmentList } from "@/components/AttachmentList";
 
 export default async function IdeaDetailPage({
   params,
@@ -25,6 +27,7 @@ export default async function IdeaDetailPage({
       commune: true,
       author: { select: { name: true } },
       votes: true,
+      attachments: { select: { id: true, name: true, mimeType: true, size: true }, orderBy: { createdAt: "asc" } },
       comments: {
         where: { status: "APPROVED" },
         orderBy: { createdAt: "asc" },
@@ -34,9 +37,8 @@ export default async function IdeaDetailPage({
   });
 
   if (!idea) notFound();
-  if (idea.status !== "APPROVED" && session?.user?.role !== "ADMIN" && session?.user?.id !== idea.authorId) {
-    notFound();
-  }
+  if (!canViewIdea(idea, session?.user)) notFound();
+  const isPrivate = idea.visibility === "PRIVATE";
 
   const hasVoted = session?.user ? idea.votes.some((v) => v.userId === session.user.id) : false;
   const category = ideaCategories[idea.category];
@@ -56,7 +58,17 @@ export default async function IdeaDetailPage({
 
       <div className="container-page grid grid-cols-1 gap-8 py-10 sm:py-12 lg:grid-cols-3">
         <div className="space-y-8 lg:col-span-2">
-          {idea.status === "PENDING" && (
+          {isPrivate && (
+            <div className="flex gap-3 rounded-xl bg-stone-100 px-4 py-3 text-sm text-stone-700 ring-1 ring-stone-900/5 ring-inset">
+              <Icon name="lock" className="mt-px size-[18px] shrink-0 text-stone-500" />
+              <p className="leading-relaxed">
+                Idée privée : elle est transmise uniquement à l&apos;administration et n&apos;apparaît pas
+                dans la boîte à idées.
+              </p>
+            </div>
+          )}
+
+          {idea.status === "PENDING" && !isPrivate && (
             <Alert tone="warning">
               Cette idée est en attente de modération. Elle n&apos;est visible que par vous et les
               administrateurs.
@@ -65,6 +77,16 @@ export default async function IdeaDetailPage({
 
           <article className="card p-6 sm:p-8">
             <p className="text-[15px] leading-relaxed whitespace-pre-wrap text-stone-700">{idea.description}</p>
+
+            {idea.attachments.length > 0 && (
+              <div className="mt-8">
+                <h2 className="mb-3 flex items-center gap-2 font-sans text-sm font-semibold text-ink">
+                  <Icon name="paperclip" className="size-4 text-stone-400" />
+                  Fichiers joints ({idea.attachments.length})
+                </h2>
+                <AttachmentList attachments={idea.attachments} />
+              </div>
+            )}
 
             {idea.adminReply && (
               <div className="mt-6 rounded-xl border-l-[3px] border-brand-700 bg-brand-50 px-5 py-4">
@@ -76,10 +98,12 @@ export default async function IdeaDetailPage({
               </div>
             )}
 
-            <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-stone-100 pt-6">
-              <VoteButton ideaId={idea.id} voteCount={idea.votes.length} hasVoted={hasVoted} />
-              <ShareButton title={idea.title} />
-            </div>
+            {!isPrivate && (
+              <div className="mt-8 flex flex-wrap items-center gap-3 border-t border-stone-100 pt-6">
+                <VoteButton ideaId={idea.id} voteCount={idea.votes.length} hasVoted={hasVoted} />
+                <ShareButton title={idea.title} />
+              </div>
+            )}
           </article>
 
           <section aria-labelledby="comments-title">
@@ -128,13 +152,28 @@ export default async function IdeaDetailPage({
 
         <aside className="lg:sticky lg:top-24 lg:self-start">
           <div className="card p-6">
-            <p className="font-display text-4xl font-semibold tracking-tight text-ink">{idea.votes.length}</p>
-            <p className="text-sm text-stone-500">
-              {idea.votes.length === 0
-                ? "Soyez le premier à soutenir cette idée"
-                : `${idea.votes.length > 1 ? "citoyens soutiennent" : "citoyen soutient"} cette idée`}
-            </p>
-            <dl className="mt-6 space-y-3 border-t border-stone-100 pt-5 text-sm">
+            {!isPrivate && (
+              <div className="mb-6 border-b border-stone-100 pb-5">
+                <p className="font-display text-4xl font-semibold tracking-tight text-ink">{idea.votes.length}</p>
+                <p className="text-sm text-stone-500">
+                  {idea.votes.length === 0
+                    ? "Soyez le premier à soutenir cette idée"
+                    : `${idea.votes.length > 1 ? "citoyens soutiennent" : "citoyen soutient"} cette idée`}
+                </p>
+              </div>
+            )}
+            {idea.estimatedCost !== null && (
+              <div className="mb-5 rounded-xl bg-paper p-4 ring-1 ring-stone-200/70">
+                <p className="flex items-center gap-1.5 text-xs font-medium text-stone-500">
+                  <Icon name="banknote" className="size-3.5" />
+                  Coût estimatif
+                </p>
+                <p className="mt-1 font-display text-xl font-semibold text-ink tabular-nums">
+                  {formatFcfa(idea.estimatedCost)}
+                </p>
+              </div>
+            )}
+            <dl className="space-y-3 text-sm">
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-stone-500">Catégorie</dt>
                 <dd className="flex items-center gap-1.5 font-medium text-ink">
@@ -145,6 +184,13 @@ export default async function IdeaDetailPage({
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-stone-500">Commune</dt>
                 <dd className="font-medium text-ink">{idea.commune.name}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-stone-500">Visibilité</dt>
+                <dd className="flex items-center gap-1.5 font-medium text-ink">
+                  <Icon name={ideaVisibility[idea.visibility].icon} className="size-4 text-brand-700" />
+                  {ideaVisibility[idea.visibility].label}
+                </dd>
               </div>
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-stone-500">Commentaires</dt>
