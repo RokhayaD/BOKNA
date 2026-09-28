@@ -3,16 +3,10 @@ import type { IconName } from "@/components/ui/Icon";
 
 export const ideaCategories: Record<string, { label: string; long: string; icon: IconName; description: string }> = {
   AMELIORATION: {
-    label: "Amélioration",
-    long: "Idée d'amélioration",
-    icon: "trending-up",
-    description: "Rendre un service ou un lieu meilleur",
-  },
-  INFRASTRUCTURE: {
-    label: "Infrastructure",
-    long: "Infrastructure",
+    label: "Amélioration d'infrastructure",
+    long: "Amélioration d'infrastructure",
     icon: "route",
-    description: "Routes, eau, assainissement, bâtiments publics…",
+    description: "Routes, eau, éclairage, bâtiments et services publics…",
   },
   SIGNALEMENT: {
     label: "Signalement",

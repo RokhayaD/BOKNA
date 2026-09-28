@@ -26,8 +26,7 @@ enum ModerationStatus {
 }
 
 enum IdeaCategory {
-  AMELIORATION
-  INFRASTRUCTURE
+  AMELIORATION // Amélioration d'infrastructure
   SIGNALEMENT
   INVESTISSEMENT
   PROJET_COMMUNAUTAIRE
