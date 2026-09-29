@@ -71,6 +71,27 @@ export default async function RegionPage({
           <p className="mt-3 leading-relaxed text-stone-600">
             {region.description ?? "Aucune présentation n'est encore disponible pour cette région."}
           </p>
+          {region.description && region.descriptionSource && (
+            <p className="mt-3 text-xs text-stone-500">
+              Source :{" "}
+              <a href={region.descriptionSource} target="_blank" rel="noopener" className="underline underline-offset-2 hover:text-brand-700">
+                {region.descriptionSource.includes("wikipedia.org") ? "Wikipédia" : "voir la source"}
+              </a>
+              {region.descriptionSource.includes("wikipedia.org") && (
+                <>
+                  {" "}· texte sous licence{" "}
+                  <a
+                    href="https://creativecommons.org/licenses/by-sa/4.0/deed.fr"
+                    target="_blank"
+                    rel="noopener license"
+                    className="underline underline-offset-2 hover:text-brand-700"
+                  >
+                    CC BY-SA 4.0
+                  </a>
+                </>
+              )}
+            </p>
+          )}
           {region.highlights.length > 0 && (
             <div className="mt-6 border-t border-stone-100 pt-6">
               <h3 className="font-sans text-sm font-semibold text-ink">Points clés</h3>

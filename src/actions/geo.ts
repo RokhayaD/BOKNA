@@ -48,6 +48,7 @@ export async function updateRegion(formData: FormData) {
     id: formData.get("id"),
     capital: formData.get("capital") ?? undefined,
     description: formData.get("description") ?? undefined,
+    descriptionSource: formData.get("descriptionSource") ?? undefined,
     highlights: formData.get("highlights") ?? undefined,
     area: formData.get("area") ?? undefined,
     population: formData.get("population") ?? undefined,
@@ -60,6 +61,7 @@ export async function updateRegion(formData: FormData) {
     data: {
       capital: data.capital || null,
       description: data.description || null,
+      descriptionSource: data.descriptionSource || null,
       // Un point clé par ligne
       highlights: (data.highlights ?? "")
         .split("\n")

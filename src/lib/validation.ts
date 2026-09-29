@@ -28,6 +28,7 @@ export const regionSchema = z.object({
   id: z.string().min(1),
   capital: z.string().trim().max(100).optional(),
   description: z.string().trim().max(3000).optional(),
+  descriptionSource: z.union([z.literal(""), z.string().trim().url("Lien de source invalide.")]).optional(),
   highlights: z.string().optional(),
   area: z.string().optional(),
   population: z.string().optional(),

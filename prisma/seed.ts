@@ -25,6 +25,7 @@ async function main() {
         where: { id: created.id },
         data: {
           description: presentation.description,
+          descriptionSource: presentation.descriptionSource,
           capital: created.capital ?? presentation.capital,
           highlights: created.highlights.length ? created.highlights : presentation.highlights,
         },

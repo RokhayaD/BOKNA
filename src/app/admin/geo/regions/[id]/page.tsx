@@ -47,6 +47,24 @@ export default async function EditRegionPage({
           </div>
 
           <div>
+            <label htmlFor="region-source" className="label">
+              Source de la présentation <span className="font-normal text-stone-400">(optionnel)</span>
+            </label>
+            <input
+              id="region-source"
+              name="descriptionSource"
+              type="url"
+              placeholder="https://fr.wikipedia.org/wiki/..."
+              defaultValue={region.descriptionSource ?? ""}
+              className="input"
+            />
+            <p className="hint">
+              Lien affiché sous la présentation. Obligatoire si le texte provient de Wikipédia (licence CC BY-SA) ;
+              videz-le si vous rédigez votre propre texte.
+            </p>
+          </div>
+
+          <div>
             <label htmlFor="region-highlights" className="label">
               Points clés
             </label>

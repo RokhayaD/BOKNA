@@ -81,6 +81,7 @@ model Region {
   centroidLng Float
   // Présentation éditable depuis l'administration
   description String?
+  descriptionSource String? // URL de la source (ex. Wikipédia), affichée en attribution
   capital     String?
   area        Int? // superficie en km²
   population  Int?

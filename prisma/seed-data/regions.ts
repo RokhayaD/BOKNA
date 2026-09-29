@@ -8,16 +8,20 @@ export type RegionSeed = {
 export type RegionPresentation = {
   capital: string;
   description: string;
+  // Page d'origine de la description (Wikipédia, licence CC BY-SA 4.0 : attribution obligatoire)
+  descriptionSource: string;
   highlights: string[];
 };
 
-// Présentation initiale de chaque région. Elle n'est écrite qu'une seule fois :
+// Présentation initiale de chaque région. Descriptions : introduction de l'article
+// Wikipédia en français (récupérée le 29/09/2026). Elle n'est écrite qu'une seule fois :
 // les modifications faites ensuite depuis l'administration ne sont jamais écrasées.
 export const regionPresentations: Record<string, RegionPresentation> = {
   dakar: {
     capital: "Dakar",
     description:
-      "Capitale du Sénégal, la région de Dakar occupe la presqu'île du Cap-Vert, point le plus occidental du continent africain. Plus petite région du pays par la superficie, elle concentre une grande partie de la population urbaine, des institutions et de l'activité économique nationale.",
+      "La Région de Dakar est l'une des 14 régions administratives du Sénégal. Occupant la presqu'île du Cap-Vert, elle correspond au territoire de la capitale, Dakar, et de ses banlieues.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Dakar_(r%C3%A9gion)",
     highlights: [
       "Capitale politique et économique du pays",
       "Port autonome et principal pôle d'affaires",
@@ -27,7 +31,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   thies: {
     capital: "Thiès",
     description:
-      "Située aux portes de Dakar, la région de Thiès allie carrefour ferroviaire historique, agriculture maraîchère et tourisme balnéaire sur la Petite-Côte.",
+      "La région de Thiès est l'une des quatorze régions administratives du Sénégal. Elle est située dans l'ouest du pays, en couronne autour de la presqu'île du Cap-Vert. Le chef-lieu régional est la ville de Thiès.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Thi%C3%A8s_(r%C3%A9gion)",
     highlights: [
       "Carrefour routier et ferroviaire",
       "Tourisme balnéaire de la Petite-Côte",
@@ -37,7 +42,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   diourbel: {
     capital: "Diourbel",
     description:
-      "Au cœur du bassin arachidier, la région de Diourbel abrite la ville sainte de Touba, haut lieu du mouridisme qui accueille chaque année le Grand Magal.",
+      "La Région de Diourbel est l'une des 14 régions administratives du Sénégal, située dans l'ouest du pays. Le chef-lieu régional est la ville de Diourbel.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Diourbel_(r%C3%A9gion)",
     highlights: [
       "Touba, ville sainte du mouridisme",
       "Grand Magal, rassemblement religieux majeur",
@@ -47,7 +53,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   fatick: {
     capital: "Fatick",
     description:
-      "Terre du Sine et du Saloum, la région de Fatick est marquée par le delta du Saloum, ses mangroves et ses îles, ainsi que par une forte tradition agricole et culturelle sérère.",
+      "La région de Fatick est l'une des 14 régions administratives du Sénégal. Elle est frontalière avec la Gambie. Le chef-lieu régional est la ville de Fatick. Elle est entourée au nord et au nord-est par les régions de Thiès, Diourbel et Louga, au sud par la République de Gambie, à l’est par la région de Kaolack et à l’ouest par l’océan Atlantique.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Fatick_(r%C3%A9gion)",
     highlights: [
       "Delta du Saloum, inscrit au patrimoine mondial de l'UNESCO",
       "Mangroves, îles et pêche artisanale",
@@ -57,7 +64,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   kaolack: {
     capital: "Kaolack",
     description:
-      "Grand carrefour commercial du centre du pays, la région de Kaolack est un pôle du bassin arachidier et de la production de sel, réputée pour son grand marché central.",
+      "La région de Kaolack est l'une des 14 régions administratives du Sénégal. Située dans le centre-ouest du pays, elle est frontalière avec la Gambie, à cheval sur la zone sahélienne Sud et la zone soudanienne Nord. Le chef-lieu régional est la ville de Kaolack.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Kaolack_(r%C3%A9gion)",
     highlights: [
       "Carrefour commercial et routier",
       "Production de sel du Saloum",
@@ -67,7 +75,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   kaffrine: {
     capital: "Kaffrine",
     description:
-      "Créée en 2008, la région de Kaffrine est une terre agricole du bassin arachidier, traversée par l'axe routier qui relie l'ouest et l'est du pays.",
+      "Créée en 2008, la région de Kaffrine est l'une des 14 régions administratives du Sénégal. Le chef-lieu régional est la ville de Kaffrine. À la suite des réformes administratives intervenues en 2008, Kaffrine a été nouvellement érigée en région. Elle couvre une superficie de 11.492 km2, soit presque les 2/3 de l’ancienne région de Kaolack avec une population d’environ 600.000 habitants. C’est l’une des cinq plus grandes régions du pays.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Kaffrine_(r%C3%A9gion)",
     highlights: [
       "Région créée en 2008",
       "Agriculture : arachide, mil et maïs",
@@ -77,7 +86,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   louga: {
     capital: "Louga",
     description:
-      "Au nord-ouest du pays, la région de Louga s'étend du littoral aux zones pastorales du Ferlo. Elle est connue pour l'élevage, le commerce et le dynamisme de sa diaspora.",
+      "La Région de Louga est l'une des 14 régions administratives du Sénégal. Elle est située au nord-ouest du pays. Le chef-lieu régional est la ville de Louga.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Louga_(r%C3%A9gion)",
     highlights: [
       "Élevage et zone pastorale du Ferlo",
       "Désert de Lompoul",
@@ -87,7 +97,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   "saint-louis": {
     capital: "Saint-Louis",
     description:
-      "Ancienne capitale du Sénégal et de l'Afrique-Occidentale française, Saint-Louis est bâtie à l'embouchure du fleuve Sénégal. Son île historique est inscrite au patrimoine mondial de l'UNESCO.",
+      "La Région de Saint-Louis est l'une des 14 régions administratives du Sénégal, celle située le plus au nord du pays. Le chef-lieu régional est la ville de Saint-Louis.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Saint-Louis_(r%C3%A9gion)",
     highlights: [
       "Île de Saint-Louis, patrimoine mondial de l'UNESCO",
       "Vallée du fleuve Sénégal et agriculture irriguée",
@@ -97,7 +108,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   matam: {
     capital: "Matam",
     description:
-      "Dans la vallée du fleuve Sénégal, au cœur du Fouta, la région de Matam vit de l'agriculture de décrue, de l'élevage et des transferts de sa diaspora.",
+      "La Région de Matam est l'une des 14 régions administratives du Sénégal. Le chef-lieu régional est la ville de Matam.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Matam_(r%C3%A9gion)",
     highlights: [
       "Vallée du fleuve et cultures de décrue",
       "Élevage",
@@ -107,7 +119,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   tambacounda: {
     capital: "Tambacounda",
     description:
-      "Plus vaste région du Sénégal, Tambacounda est un carrefour vers le Mali et la Guinée. Elle abrite une grande partie du parc national du Niokolo-Koba.",
+      "La région de Tambacounda est l'une des 14 régions administratives du Sénégal. Très étendue, elle est située dans l'est du pays. Le chef-lieu régional est la ville de Tambacounda. Tambacounda est géographiquement la plus grande des 11 régions du Sénégal, mais a une faible densité de population, son économie est plus pauvre que celle du reste du pays.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Tambacounda_(r%C3%A9gion)",
     highlights: [
       "Plus grande région du pays",
       "Parc national du Niokolo-Koba, patrimoine mondial de l'UNESCO",
@@ -117,7 +130,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   kedougou: {
     capital: "Kédougou",
     description:
-      "À l'extrême sud-est du pays, la région de Kédougou offre les principaux reliefs du Sénégal, des cascades et une grande richesse culturelle. Elle est aussi un pôle d'exploitation aurifère.",
+      "La région de Kédougou est l'une des 14 régions administratives du Sénégal. Frontalière avec le Mali et la Guinée, elle est située dans l'extrême sud-est du pays. Le chef-lieu régional est la ville de Kédougou.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/K%C3%A9dougou_(r%C3%A9gion)",
     highlights: [
       "Collines et cascade de Dindéfélo",
       "Pays bassari, inscrit au patrimoine mondial de l'UNESCO",
@@ -127,7 +141,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   kolda: {
     capital: "Kolda",
     description:
-      "Au cœur de la Haute-Casamance, la région de Kolda est une zone d'agriculture et d'élevage, frontalière de la Gambie et de la Guinée-Bissau.",
+      "La région de Kolda est l'une des 14 régions administratives du Sénégal. Elle est située en Haute-Casamance, dans le sud du pays. Elle est bordée au nord par la Gambie, au sud par la Guinée-Bissau et la Guinée, à l'Ouest par la région de Sédhiou et à l'Est par la région de Tambacounda. Le chef-lieu régional est la ville de Kolda.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Kolda_(r%C3%A9gion)",
     highlights: [
       "Haute-Casamance",
       "Agriculture : coton, riz et arachide",
@@ -137,7 +152,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   sedhiou: {
     capital: "Sédhiou",
     description:
-      "Créée en 2008 en Moyenne-Casamance, la région de Sédhiou est traversée par le fleuve Casamance. Son économie repose sur l'agriculture, notamment la riziculture et l'anacarde.",
+      "La région de Sédhiou est l'une des 14 régions administratives du Sénégal. Elle est située au centre de la Casamance, ou Moyenne Casamance. Elle fait partie des dernières régions créées, en 2008. Le chef-lieu régional est la ville de Sédhiou.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/S%C3%A9dhiou_(r%C3%A9gion)",
     highlights: [
       "Région créée en 2008",
       "Fleuve Casamance",
@@ -147,7 +163,8 @@ export const regionPresentations: Record<string, RegionPresentation> = {
   ziguinchor: {
     capital: "Ziguinchor",
     description:
-      "Capitale de la Basse-Casamance, la région de Ziguinchor est réputée pour ses paysages verdoyants, ses rizières, ses bolongs et les plages du Cap Skirring.",
+      "La région de Ziguinchor est l'une des 14 régions administratives du Sénégal. Frontalière avec la Gambie au nord et la Guinée-Bissau au sud, elle forme la partie occidentale de la Casamance, connue sous le nom de Basse Casamance. Les communications avec Dakar passent presque exclusivement par mer ou à travers le territoire de la Gambie.",
+    descriptionSource: "https://fr.wikipedia.org/wiki/Ziguinchor_(r%C3%A9gion)",
     highlights: [
       "Basse-Casamance et fleuve Casamance",
       "Tourisme : Cap Skirring et îles",
